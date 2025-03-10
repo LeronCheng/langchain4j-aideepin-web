@@ -20,17 +20,14 @@ const editConv = ref<Chat.Conversation>({} as Chat.Conversation)
 
 async function handleSelect({ uuid }: Chat.Conversation) {
   console.log('click chat', uuid)
-  if (isActive(uuid))
-    return
+  if (isActive(uuid)) return
 
-  if (chatStore.active)
-    chatStore.updateConv(chatStore.active, {})
+  if (chatStore.active) chatStore.updateConv(chatStore.active, {})
   await chatStore.setActive(uuid)
 
   await checkAndLoadFirstPageMsgsByConv(uuid)
 
-  if (isMobile.value)
-    appStore.setSiderCollapsed(true)
+  if (isMobile.value) appStore.setSiderCollapsed(true)
 }
 
 function handleMouseEnter({ uuid }: Chat.Conversation) {
@@ -40,8 +37,7 @@ function handleMouseLeave() {
   mouseEnterKbUuid.value = ''
 }
 function openEditView(item: Chat.Conversation, event?: KeyboardEvent) {
-  if (!authStore.checkLoginOrShow())
-    return
+  if (!authStore.checkLoginOrShow()) return
   showEditModal.value = true
   editConv.value = item
 }
@@ -71,8 +67,7 @@ async function fetchHistory() {
  * 如果会话{uuid}的消息不存在，向服务端请求第一页
  */
 async function checkAndLoadFirstPageMsgsByConv(uuid: string) {
-  if (chatStore.loadingMsgs.has(uuid))
-    return
+  if (chatStore.loadingMsgs.has(uuid)) return
 
   chatStore.addLoadingMsg(uuid)
   try {
@@ -80,7 +75,7 @@ async function checkAndLoadFirstPageMsgsByConv(uuid: string) {
     const cacheMessages = chatStore.getMsgsByConv(uuid)
     if (cacheMessages.length === 0) {
       const { data } = await api.fetchMessages<Chat.ConvMsgListResp>(uuid, minMsgUuid, 20)
-      data.msgList.forEach((messageRecord) => {
+      data.msgList.forEach(messageRecord => {
         chatStore.addMessage(uuid, messageRecord, false)
       })
       chatStore.updateConv(uuid, { minMsgUuid: data.minMsgUuid, loadedFirstPageMsg: true })
@@ -94,18 +89,17 @@ const convList = computed(() => chatStore.conversations)
 
 watch(
   () => authStoreRef.value.token,
-  (newVal) => {
+  newVal => {
     if (newVal) {
       console.log('token change, reaload')
       fetchHistory()
     }
-  },
+  }
 )
 
 onMounted(() => {
   console.log('chat list onMounted')
-  if (authStoreRef.value.token)
-    fetchHistory()
+  if (authStoreRef.value.token) fetchHistory()
 })
 </script>
 
@@ -121,11 +115,7 @@ onMounted(() => {
       </template>
       <template v-else>
         <div v-for="(item, index) of convList" :key="index">
-          <a
-            class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]"
-            :class="isActive(item.uuid) && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]']"
-            @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave"
-          >
+          <a class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]" :class="isActive(item.uuid) && ['border-[#2379a6]', 'bg-neutral-100', 'text-[#2379a6]', 'dark:bg-[#002140]', 'dark:border-[#2379a6]']" @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave">
             <span>
               <SvgIcon icon="ri:message-3-line" />
             </span>

@@ -22,10 +22,20 @@ export function useTheme() {
   const themeOverrides = computed<GlobalThemeOverrides>(() => {
     if (isDark.value) {
       return {
-        common: {},
+        common: {
+          primaryColor: '#001529', // 自定义深色主题的主色
+          primaryColorHover: '#001529', // 自定义深色主题的主色悬停状态
+          primaryColorPressed: '#001529', // 自定义深色主题的主色按下状态
+        },
       }
     }
-    return {}
+    return {
+      common: {
+        primaryColor: '#2379a6', // 自定义浅色主题的主色
+        primaryColorHover: '#2379a6', // 自定义浅色主题的主色悬停状态
+        primaryColorPressed: '#2379a6', // 自定义浅色主题的主色按下状态
+      },
+    }
   })
 
   watch(

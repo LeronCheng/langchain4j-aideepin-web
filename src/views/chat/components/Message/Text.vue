@@ -30,29 +30,19 @@ const mdi = new MarkdownIt({
       return highlightBlock(hljs.highlight(code, { language: lang }).value, lang)
     }
     return highlightBlock(hljs.highlightAuto(code).value, '')
-  },
+  }
 })
 
 mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
 mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
 
 const wrapClass = computed(() => {
-  return [
-    'text-wrap',
-    'min-w-[20px]',
-    'rounded-md',
-    isMobile.value ? 'p-2' : 'px-3 py-2',
-    props.inversion ? 'bg-[#d2f9d1]' : 'bg-[#f4f6f8]',
-    props.inversion ? 'dark:bg-[#a1dc95]' : 'dark:bg-[#1e1e20]',
-    props.inversion ? 'message-request' : 'message-reply',
-    { 'text-red-500': props.error },
-  ]
+  return ['text-wrap', 'min-w-[20px]', 'rounded-md', isMobile.value ? 'p-2' : 'px-3 py-2', props.inversion ? 'bg-[#2379a6]' : 'bg-[#f4f6f8]', props.inversion ? 'dark:bg-[#002140]' : 'dark:bg-[#1e1e20]', props.inversion ? 'message-request' : 'message-reply', { 'text-red-500': props.error }]
 })
 
 const text = computed(() => {
   const value = props.text ?? ''
-  if (!props.asRawText)
-    return mdi.render(value)
+  if (!props.asRawText) return mdi.render(value)
   return value
 })
 
@@ -78,4 +68,8 @@ defineExpose({ textRef })
 
 <style lang="less">
 @import url(./style.less);
+
+.break-words {
+  color: #fff;
+}
 </style>

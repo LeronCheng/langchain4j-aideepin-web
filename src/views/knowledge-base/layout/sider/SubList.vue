@@ -23,8 +23,7 @@ interface Props {
   activeKbUuid: string
 }
 async function handleSelect({ uuid }: KnowledgeBase.Info) {
-  if (props.activeKbUuid === uuid)
-    return
+  if (props.activeKbUuid === uuid) return
   kbStore.setActive(uuid)
   router.replace({ name: 'QADetail', params: { kbUuid: uuid } })
 }
@@ -44,8 +43,7 @@ function showKb(item: KnowledgeBase.Info) {
 }
 onActivated(async () => {
   const savedPosition = localStorage.getItem('subListScrollPosition')
-  if (savedPosition)
-    scrollTo(savedPosition as unknown as number)
+  if (savedPosition) scrollTo(savedPosition as unknown as number)
 })
 onUnmounted(() => {
   // 组件卸载前，可以清除之前保存的滚动位置
@@ -63,12 +61,7 @@ onUnmounted(() => {
     </template>
     <template v-else>
       <div class="flex flex-col gap-2 text-sm">
-        <a
-          v-for="item of list" :key="item.uuid"
-          class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]"
-          :class="item.uuid === activeKbUuid && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]', 'pr-14']"
-          @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave"
-        >
+        <a v-for="item of list" :key="item.uuid" class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]" :class="item.uuid === activeKbUuid && ['border-[#2379a6]', 'bg-neutral-100', 'text-[#2379a6]', 'dark:bg-[#24272e]', 'dark:border-[#2379a6]', 'pr-14']" @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave">
           <span>
             <NIcon v-if="item.isPublic" :component="Cloud32Regular" />
             <NIcon v-if="!item.isPublic" :component="LockClosed32Regular" />
@@ -77,10 +70,7 @@ onUnmounted(() => {
             <span>{{ item.title }}</span>
           </div>
           <div class="absolute z-10 flex visible right-1">
-            <NButton
-              v-show="mouseEnterKbUuid === item.uuid || isMobile" secondary size="tiny"
-              @click.stop="showKb(item)"
-            >
+            <NButton v-show="mouseEnterKbUuid === item.uuid || isMobile" secondary size="tiny" @click.stop="showKb(item)">
               <SvgIcon icon="si:align-left-detailed-line" />
             </NButton>
           </div>

@@ -40,7 +40,7 @@ const fileList = ref<UploadFileInfo[]>([])
 const paginationReactive = reactive({
   page: 1,
   pageSize: 20,
-  itemCount: 0,
+  itemCount: 0
 })
 const searchValue = ref<string>('')
 const tmpItem = reactive<KnowledgeBase.Item>(knowledgeBaseEmptyItem())
@@ -102,12 +102,15 @@ const showFileContent = (selected: KnowledgeBase.Item = knowledgeBaseEmptyItem()
       break
     case 'txt':
       previewMimeType.value = 'text/plain'
-      api.loadFileContent(previewFileUrl.value).then((resp) => {
-        console.log('loadFileContent', resp)
-        previewFileContent.value = resp.data
-      }).catch((err) => {
-        console.error('loadFileContent error', err)
-      })
+      api
+        .loadFileContent(previewFileUrl.value)
+        .then(resp => {
+          console.log('loadFileContent', resp)
+          previewFileContent.value = resp.data
+        })
+        .catch(err => {
+          console.error('loadFileContent error', err)
+        })
       break
     default:
       previewMimeType.value = 'text/plain'
@@ -205,10 +208,7 @@ async function onKeyUpSearch(event: KeyboardEvent) {
   }
 }
 
-async function onUploadBefore(data: {
-  file: UploadFileInfo
-  fileList: UploadFileInfo[]
-}) {
+async function onUploadBefore(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
   return true
 }
 
@@ -225,17 +225,9 @@ function onUploadSubmit() {
   }, 3000)
 }
 
-function onUploadFinish({
-  file,
-  event,
-}: {
-  file: UploadFileInfo
-  event?: ProgressEvent
-}) {
-  if ((event?.target as XMLHttpRequest).response.success)
-    ms.success('上传成功')
-  else
-    ms.error((event?.target as XMLHttpRequest).response.message)
+function onUploadFinish({ file, event }: { file: UploadFileInfo; event?: ProgressEvent }) {
+  if ((event?.target as XMLHttpRequest).response.success) ms.success('上传成功')
+  else ms.error((event?.target as XMLHttpRequest).response.message)
 
   return file
 }
@@ -280,7 +272,7 @@ function deleteKbItem(row: KnowledgeBase.Item) {
       nextTick(() => {
         itemList.value = itemList.value.filter(item => item.uuid !== row.uuid)
       })
-    },
+    }
   })
 }
 
@@ -291,8 +283,7 @@ async function initData() {
 }
 
 onMounted(async () => {
-  if (curKnowledgeBase.title === '')
-    await initData()
+  if (curKnowledgeBase.title === '') await initData()
 })
 watch(
   () => token,
@@ -302,7 +293,7 @@ watch(
       headers.Authorization = token.value
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 </script>
 
@@ -319,10 +310,7 @@ watch(
         {{ curKnowledgeBase.title }}
       </NBreadcrumbItem>
     </NBreadcrumb>
-    <NCard
-      style="margin-top: 12px"
-      :title="`知识库: ${curKnowledgeBase.title}(${curKnowledgeBase.isPublic ? '公开' : '私有'})`" hoverable
-    >
+    <NCard style="margin-top: 12px" :title="`知识库: ${curKnowledgeBase.title}(${curKnowledgeBase.isPublic ? '公开' : '私有'})`" hoverable>
       <template #header-extra>
         <NIcon v-if="curKnowledgeBase.isPublic" :component="Cloud32Regular" />
         <NIcon v-if="!curKnowledgeBase.isPublic" :component="LockClosed32Regular" />
@@ -349,11 +337,7 @@ watch(
           </NButton>
         </div>
       </div>
-      <NDataTable
-        remote :loading="loading" :max-height="400" :columns="columns" :data="itemList"
-        :pagination="paginationReactive" :single-line="false" :bordered="true" :row-key="rowKey"
-        @update:checked-row-keys="onHandleCheckedRowKeys" @update:page="onHandlePageChange"
-      />
+      <NDataTable remote :loading="loading" :max-height="400" :columns="columns" :data="itemList" :pagination="paginationReactive" :single-line="false" :bordered="true" :row-key="rowKey" @update:checked-row-keys="onHandleCheckedRowKeys" @update:page="onHandlePageChange" />
     </NCard>
   </div>
 
@@ -362,10 +346,7 @@ watch(
       {{ t('store.title') }}
       <NInput v-model:value="tmpItem.title" maxlength="100" show-count />
       摘要
-      <NInput
-        v-model:value="tmpItem.brief" type="textarea" maxlength="200" show-count
-        :autosize="{ minRows: 2, maxRows: 5 }"
-      />
+      <NInput v-model:value="tmpItem.brief" type="textarea" maxlength="200" show-count :autosize="{ minRows: 2, maxRows: 5 }" />
       内容
       <NInput v-model:value="tmpItem.remark" type="textarea" show-count :autosize="{ minRows: 5, maxRows: 10 }" />
       <NButton block type="primary" :disabled="inputStatus" @click="() => { saveOrUpdate() }">
@@ -378,12 +359,7 @@ watch(
   <NModal v-model:show="showUploadModal" style="width: 90%; max-height: 700px;" preset="card" title="知识点-上传">
     <NCard style="margin-top: 12px" title="上传文档以生成知识点" hoverable>
       <NSpace vertical>
-        <NUpload
-          ref="uploadRef" multiple :default-file-list="fileList" directory-dnd
-          :action="`/api/knowledge-base/upload/${curKbUuid}?indexAfterUpload=${indexAfterUpload}`"
-          :default-upload="false" :max="20" :headers="headers" @before-upload="onUploadBefore" @finish="onUploadFinish"
-          @change="onUploadChange"
-        >
+        <NUpload ref="uploadRef" multiple :default-file-list="fileList" directory-dnd :action="`/api/knowledge-base/upload/${curKbUuid}?indexAfterUpload=${indexAfterUpload}`" :default-upload="false" :max="20" :headers="headers" @before-upload="onUploadBefore" @finish="onUploadFinish" @change="onUploadChange">
           <NUploadDragger>
             <div style="margin-bottom: 12px">
               <NIcon size="48" :depth="3">
@@ -435,10 +411,7 @@ watch(
       <div v-if="previewFileUrl && previewMimeType === 'text/plain'">
         {{ previewFileContent }}
       </div>
-      <object
-        v-if="previewFileUrl && previewMimeType !== 'text/plain' && previewMimeType !== 'application/pdf'"
-        :data="previewFileUrl" width="100%" height="90%" :type="previewMimeType"
-      >
+      <object v-if="previewFileUrl && previewMimeType !== 'text/plain' && previewMimeType !== 'application/pdf'" :data="previewFileUrl" width="100%" height="90%" :type="previewMimeType">
         <p>您的浏览器不支持嵌入该文档，请点击下载查看</p>
       </object>
     </div>
