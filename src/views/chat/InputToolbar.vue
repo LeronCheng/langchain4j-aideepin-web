@@ -97,8 +97,13 @@ watch(
           <SvgIcon icon="ri:chat-history-line" />
         </span>
       </HoverButton>
-      <HoverButton tooltip="上传文件" @click="() => showUploadModal = !showUploadModal">
+      <!-- <HoverButton tooltip="上传文件" @click="() => showUploadModal = !showUploadModal">
         <span class="text-xl text-[#2379a6]">
+          <SvgIcon icon="ri:upload-2-line" />
+        </span>
+      </HoverButton> -->
+      <HoverButton tooltip="上传文件（功能开发中）">
+        <span class="text-xl">
           <SvgIcon icon="ri:upload-2-line" />
         </span>
       </HoverButton>
