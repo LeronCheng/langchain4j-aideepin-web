@@ -226,8 +226,9 @@ function onUploadSubmit() {
 }
 
 function onUploadFinish({ file, event }: { file: UploadFileInfo; event?: ProgressEvent }) {
-  if ((event?.target as XMLHttpRequest).response.success) ms.success('上传成功')
-  else ms.error((event?.target as XMLHttpRequest).response.message)
+  const res = JSON.parse((event?.target as XMLHttpRequest).response)
+  if (res.success) ms.success('上传成功')
+  else ms.error(res.message)
 
   return file
 }
