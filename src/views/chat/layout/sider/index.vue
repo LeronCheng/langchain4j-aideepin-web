@@ -17,6 +17,8 @@ const { isMobile } = useBasicLayout()
 
 const collapsed = computed(() => appStore.siderCollapsed)
 
+const convList = computed(() => chatStore.conversations)
+
 function handleAdd(this: any) {
   if (chatStore.allConvsCount >= 50) {
     ms.warning(t('chat.converstaionReachLimit50'), {
@@ -34,7 +36,15 @@ async function handleChatAdd() {
     })
     return
   }
-  const tmpTitle = ref('new chat')
+  // 获取到源对话列表中title包含new chat的title，并获取new chat后面的数字
+  const titleListNum = convList.value
+    .filter((item: any) => item.title.includes('new chat'))
+    .map((item: any) => {
+      const match = item.title.match(/new chat(.*)/)
+      return match[1] ? parseInt(match[1].trim()) : 0
+    })
+  const maxNum = Math.max(...titleListNum)
+  const tmpTitle = ref(`new chat${maxNum + 1}`)
   const params = { title: tmpTitle.value, remark: '', aiSystemMessage: '' }
   try {
     const { data: newConv } = await api.convAdd<Chat.Conversation>(params)
