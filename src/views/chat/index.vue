@@ -57,9 +57,8 @@ let prevScrollTop: number
 useCopyCode()
 
 // 未知原因刷新页面，loading 状态不会重置，手动重置
-messages.value.forEach((item) => {
-  if (item.loading)
-    updateMessageSomeFields(curConvUuid, item.uuid, { loading: false })
+messages.value.forEach(item => {
+  if (item.loading) updateMessageSomeFields(curConvUuid, item.uuid, { loading: false })
 })
 
 function handleSubmit() {
@@ -74,15 +73,12 @@ const fetchChatAPIOnce = async (message: string, regenerateQuestionUuid: string)
       conversationUuid: curConvUuid,
       regenerateQuestionUuid,
       modelName: appStore.selectedLLM.modelName,
-      imageUrls: imageUuids.value,
+      imageUrls: imageUuids.value
     },
     signal: controller.signal,
-    startCallback(chunk) {
-
-    },
-    messageRecived: (chunk) => {
-      if (chunk)
-        chunk = chunk.replace('-_-_wrap_-_-', '\r\n')
+    startCallback(chunk) {},
+    messageRecived: chunk => {
+      if (chunk) chunk = chunk.replace('-_-_wrap_-_-', '\r\n')
 
       let question = null
       if (regenerateQuestionUuid) {
@@ -96,18 +92,14 @@ const fetchChatAPIOnce = async (message: string, regenerateQuestionUuid: string)
       }
       try {
         for (let i = 0; i < chunk.length; i++) {
-          appendChunk(
-            curConvUuid,
-            question.children[0].uuid,
-            chunk[i],
-          )
+          appendChunk(curConvUuid, question.children[0].uuid, chunk[i])
         }
       } catch (error) {
         console.error(error)
       }
       scrollToBottomIfAtBottom()
     },
-    doneCallback: (chunk) => {
+    doneCallback: chunk => {
       if (chunk.includes('[META]')) {
         const meta = chunk.replace('[META]', '')
         const metaData: Chat.MetaData = JSON.parse(meta)
@@ -127,7 +119,7 @@ const fetchChatAPIOnce = async (message: string, regenerateQuestionUuid: string)
       }
       loading.value = false
     },
-    errorCallback: (error) => {
+    errorCallback: error => {
       ms.warning(error)
       loading.value = false
       let question = null
@@ -141,7 +133,7 @@ const fetchChatAPIOnce = async (message: string, regenerateQuestionUuid: string)
         question = messages.value[messages.value.length - 1]
       }
       updateMessageSomeFields(curConvUuid, question.children[0].uuid, { remark: `系统提示：${error}`, loading: false })
-    },
+    }
   })
 }
 
@@ -153,11 +145,9 @@ async function createChatTask() {
 
   const message = prompt.value
 
-  if (loading.value)
-    return
+  if (loading.value) return
 
-  if (!message || message.trim() === '')
-    return
+  if (!message || message.trim() === '') return
 
   const questionUuid = uuidv4().replace(/-/g, '')
   const answerUuid = uuidv4().replace(/-/g, '')
@@ -170,22 +160,25 @@ async function createChatTask() {
       uuid: questionUuid,
       createTime: new Date().toLocaleString(),
       remark: message,
-      children: [{
-        uuid: answerUuid,
-        createTime: new Date().toLocaleString(),
-        remark: '',
-        children: [],
-        loading: true,
-        inversion: false,
-        error: false,
-        aiModelPlatform: appStore.selectedLLM.modelPlatform,
-        attachmentUrls: [],
-      }],
+      children: [
+        {
+          uuid: answerUuid,
+          createTime: new Date().toLocaleString(),
+          remark: '',
+          children: [],
+          loading: true,
+          inversion: false,
+          error: false,
+          aiModelPlatform: appStore.selectedLLM.modelPlatform,
+          aiModelName: appStore.selectedLLM.modelName,
+          attachmentUrls: []
+        }
+      ],
       inversion: true,
       error: false,
-      attachmentUrls: [],
+      attachmentUrls: []
     },
-    true,
+    true
   )
 
   loading.value = true
@@ -205,33 +198,27 @@ async function createChatTask() {
 
 async function onRegenerate(questionUuid: string) {
   console.log(`onRegenerate,question uuid:${questionUuid}`)
-  if (loading.value)
-    return
+  if (loading.value) return
 
   regenerateQuestionUuid.value = questionUuid
   const message = chatStore.getMsgByCurConv(questionUuid)
-  if (!message)
-    return
+  if (!message) return
 
   loading.value = true
   controller = new AbortController()
 
   const answerUuid = uuidv4().replace(/-/g, '')
 
-  unshiftAnswer(
-    curConvUuid,
-    questionUuid,
-    {
-      uuid: answerUuid,
-      createTime: new Date().toLocaleString(),
-      remark: '',
-      children: [],
-      inversion: false,
-      error: false,
-      loading: true,
-      attachmentUrls: [],
-    },
-  )
+  unshiftAnswer(curConvUuid, questionUuid, {
+    uuid: answerUuid,
+    createTime: new Date().toLocaleString(),
+    remark: '',
+    children: [],
+    inversion: false,
+    error: false,
+    loading: true,
+    attachmentUrls: []
+  })
 
   try {
     await fetchChatAPIOnce('', questionUuid)
@@ -248,14 +235,12 @@ function selectedLatestAnswer(questionUuid: string) {
   nextTick(() => {
     console.log('fetchChatAPIOnce nextTick')
     const index = messages.value.findIndex(msg => msg.uuid === questionUuid)
-    if (index !== -1 && messages.value[index].children[0])
-      tabsActiveTab.value[index] = `tab_${messages.value[index].children[0].uuid}`
+    if (index !== -1 && messages.value[index].children[0]) tabsActiveTab.value[index] = `tab_${messages.value[index].children[0].uuid}`
   })
 }
 
 async function loadMoreMessage(callback?: Function) {
-  if (currConv.value.loadedAll || loadingMsgs.value)
-    return
+  if (currConv.value.loadedAll || loadingMsgs.value) return
 
   loadingMsgs.value = true
   loaddingBar.start()
@@ -266,7 +251,7 @@ async function loadMoreMessage(callback?: Function) {
     if (data.msgList.length < pageSize) {
       chatStore.updateConv(curConvUuid, { minMsgUuid: data.minMsgUuid, loadedAll: true })
       ms.warning('没有更多了', {
-        duration: 3000,
+        duration: 3000
       })
     } else {
       chatStore.updateConv(curConvUuid, { minMsgUuid: data.minMsgUuid })
@@ -278,8 +263,7 @@ async function loadMoreMessage(callback?: Function) {
     loadingMsgs.value = false
     loaddingBar.finish()
 
-    if (callback)
-      callback()
+    if (callback) callback()
   }
 }
 
@@ -298,12 +282,10 @@ async function handleScroll(event: any) {
 }
 
 function handleDelete(questionUuid: string, answerUuid: string, isQuestion = false) {
-  if (loading.value)
-    return
+  if (loading.value) return
 
   let tip = t('chat.deleteMessageConfirm')
-  if (isQuestion)
-    tip = '删除提问也会把答案一起删除'
+  if (isQuestion) tip = '删除提问也会把答案一起删除'
 
   dialog.warning({
     title: t('chat.deleteMessage'),
@@ -321,7 +303,7 @@ function handleDelete(questionUuid: string, answerUuid: string, isQuestion = fal
           selectedLatestAnswer(questionUuid)
         }, 3000)
       }
-    },
+    }
   })
 }
 
@@ -329,19 +311,14 @@ function handleUp(event: KeyboardEvent) {
   if (event.key === 'ArrowUp' && prompt.value.indexOf('/') !== 0) {
     event.preventDefault()
     const msgLength = messages.value.length
-    if (msgLength === 0)
-      return
+    if (msgLength === 0) return
 
-    if (arrowKeyIdx === -1)
-      arrowKeyIdx = msgLength - 1
-    else
-      arrowKeyIdx--
+    if (arrowKeyIdx === -1) arrowKeyIdx = msgLength - 1
+    else arrowKeyIdx--
 
     const nextMessage = messages.value[arrowKeyIdx]
-    if (nextMessage)
-      prompt.value = nextMessage.remark
-    else
-      arrowKeyIdx++
+    if (nextMessage) prompt.value = nextMessage.remark
+    else arrowKeyIdx++
   }
 }
 
@@ -349,19 +326,14 @@ function handleDown(event: KeyboardEvent) {
   if (event.key === 'ArrowDown' && prompt.value.indexOf('/') !== 0) {
     event.preventDefault()
     const msgLength = messages.value.length
-    if (msgLength === 0)
-      return
+    if (msgLength === 0) return
 
-    if (arrowKeyIdx === -1)
-      arrowKeyIdx = 0
-    else
-      arrowKeyIdx++
+    if (arrowKeyIdx === -1) arrowKeyIdx = 0
+    else arrowKeyIdx++
 
     const preMessage = messages.value[arrowKeyIdx]
-    if (preMessage)
-      prompt.value = preMessage.remark
-    else
-      arrowKeyIdx--
+    if (preMessage) prompt.value = preMessage.remark
+    else arrowKeyIdx--
   }
 }
 
@@ -388,8 +360,7 @@ function handleStop() {
 }
 
 const searchOptions = computed(() => {
-  if (prompt.value.indexOf('/') === 0)
-    searchRemote()
+  if (prompt.value.indexOf('/') === 0) searchRemote()
 
   return promptTemplateList.value
 })
@@ -401,22 +372,20 @@ async function searchRemote() {
     resp.data.records.forEach((item: Chat.Prompt) => {
       promptTemplateList.value.push({
         label: item.act,
-        value: item.prompt,
+        value: item.prompt
       })
     })
   }
 }
 
 function getShow(value: string) {
-  if (value.indexOf('/') === 0)
-    return true
+  if (value.indexOf('/') === 0) return true
 
   return false
 }
 
 const placeholder = computed(() => {
-  if (isMobile.value)
-    return t('chat.placeholderMobile')
+  if (isMobile.value) return t('chat.placeholderMobile')
   return 'Shift + Enter = 换行 ；/ 开头显示提示词'
 })
 
@@ -426,18 +395,15 @@ const buttonDisabled = computed(() => {
 
 const footerClass = computed(() => {
   let classes = ['p-4']
-  if (isMobile.value)
-    classes = ['sticky', 'left-0', 'bottom-0', 'right-0', 'p-2', 'pr-3', 'overflow-hidden']
+  if (isMobile.value) classes = ['sticky', 'left-0', 'bottom-0', 'right-0', 'p-2', 'pr-3', 'overflow-hidden']
   return classes
 })
 
 function toggleUsingContext() {
   api.convToggleUsingContext(currConv.value.uuid, !currConv.value.understandContextEnable)
   currConv.value.understandContextEnable = !currConv.value.understandContextEnable
-  if (currConv.value.understandContextEnable)
-    ms.success(t('chat.turnOnContext'))
-  else
-    ms.warning(t('chat.turnOffContext'))
+  if (currConv.value.understandContextEnable) ms.success(t('chat.turnOnContext'))
+  else ms.warning(t('chat.turnOffContext'))
 }
 
 function imagesChange(uuids: string[]) {
@@ -447,10 +413,9 @@ function imagesChange(uuids: string[]) {
 watch(
   () => currConv.value.loadedFirstPageMsg,
   () => {
-    if (currConv.value.loadedFirstPageMsg)
-      scrollToBottom()
+    if (currConv.value.loadedFirstPageMsg) scrollToBottom()
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 onMounted(() => {
@@ -458,19 +423,16 @@ onMounted(() => {
   nextTick(() => {
     scrollToBottom()
   })
-  if (inputRef.value && !isMobile.value)
-    inputRef.value?.focus()
+  if (inputRef.value && !isMobile.value) inputRef.value?.focus()
 })
 
 onUnmounted(() => {
-  if (loading.value)
-    controller.abort()
+  if (loading.value) controller.abort()
 })
 
 onActivated(async () => {
   console.log('onActivated')
-  if (!curConvUuid && chatStore.active)
-    await chatStore.setActive(chatStore.active)
+  if (!curConvUuid && chatStore.active) await chatStore.setActive(chatStore.active)
 
   scrollToBottom()
 })
@@ -482,17 +444,11 @@ onDeactivated(() => {
 
 <template>
   <div class="chat-box flex flex-col w-full h-full">
-    <HeaderComponent
-      v-if="isMobile" :using-context="currConv.understandContextEnable"
-      @toggle-using-context="toggleUsingContext"
-    />
+    <HeaderComponent v-if="isMobile" :using-context="currConv.understandContextEnable" @toggle-using-context="toggleUsingContext" />
     <PcHeader v-if="!isMobile" :conversation="currConv" />
     <main class="flex-1 overflow-hidden">
       <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto" @scroll="handleScroll">
-        <div
-          id="image-wrapper" class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
-          :class="[isMobile ? 'p-2' : 'p-4']"
-        >
+        <div id="image-wrapper" class="w-full max-w-screen-xl m-auto dark:bg-[#101014]" :class="[isMobile ? 'p-2' : 'p-4']">
           <template v-if="!authStore.token">
             <LoginTip />
           </template>
@@ -507,51 +463,25 @@ onDeactivated(() => {
             <div v-for="(question, index) of messages" :key="index">
               <!-- 多模态的请求消息，携带有附件 -->
               <template v-if="question.attachmentUrls.length > 0">
-                <Message
-                  :date-time="question.createTime" :text="question.remark" :image-urls="question.attachmentUrls"
-                  type="text-image" :inversion="true" :error="question.error" :loading="false"
-                  @regenerate="onRegenerate(question.uuid)" @delete="handleDelete(question.uuid, '', true)"
-                />
+                <Message :date-time="question.createTime" :text="question.remark" :image-urls="question.attachmentUrls" type="text-image" :inversion="true" :error="question.error" :loading="false" @regenerate="onRegenerate(question.uuid)" @delete="handleDelete(question.uuid, '', true)" />
               </template>
               <!-- 非多模态的请求消息，没有附件 -->
               <template v-if="question.attachmentUrls.length === 0">
-                <Message
-                  :date-time="question.createTime" :text="question.remark" type="text" :inversion="true"
-                  :error="question.error" :loading="false" @regenerate="onRegenerate(question.uuid)"
-                  @delete="handleDelete(question.uuid, '', true)"
-                />
+                <Message :date-time="question.createTime" :text="question.remark" type="text" :inversion="true" :error="question.error" :loading="false" @regenerate="onRegenerate(question.uuid)" @delete="handleDelete(question.uuid, '', true)" />
               </template>
 
               <!-- LLM的多条回复消息 -->
               <template v-if="question.children.length > 1">
-                <NTabs
-                  v-model:value="tabsActiveTab[index]" pane-wrapper-style="margin: -30px -30px"
-                  pane-style="padding-left: 4px; box-sizing: border-box;" type="bar" placement="left" size="small"
-                  animated
-                >
-                  <NTabPane
-                    v-for="(answer, index) of question.children" :key="`tab_${answer.uuid}`"
-                    :name="`tab_${answer.uuid}`" :tab="`答案${index + 1}`"
-                  >
-                    <Message
-                      :show-avatar="false" :date-time="answer.createTime" :text="answer.remark" type="text"
-                      :inversion="false" :regenerate="true" :error="answer.error" :loading="answer.loading"
-                      :ai-model-platform="answer.aiModelPlatform" @regenerate="onRegenerate(question.uuid)"
-                      @delete="handleDelete(question.uuid, answer.uuid)"
-                    />
+                <NTabs v-model:value="tabsActiveTab[index]" pane-wrapper-style="margin: -30px -30px" pane-style="padding-left: 4px; box-sizing: border-box;" type="bar" placement="left" size="small" animated>
+                  <NTabPane v-for="(answer, index) of question.children" :key="`tab_${answer.uuid}`" :name="`tab_${answer.uuid}`" :tab="`答案${index + 1}`">
+                    <Message :show-avatar="false" :date-time="answer.createTime" :text="answer.remark" type="text" :inversion="false" :regenerate="true" :error="answer.error" :loading="answer.loading" :ai-model-platform="answer.aiModelPlatform" :ai-model-name="answer.aiModelName" @regenerate="onRegenerate(question.uuid)" @delete="handleDelete(question.uuid, answer.uuid)" />
                   </NTabPane>
                 </NTabs>
               </template>
 
               <!-- LLM的单条回复消息 -->
               <template v-if="question.children.length === 1">
-                <Message
-                  :date-time="question.children[0].createTime" :text="question.children[0].remark" type="text"
-                  :inversion="question.children[0].inversion" :regenerate="true" :error="question.children[0].error"
-                  :loading="question.children[0].loading" :ai-model-platform="question.children[0].aiModelPlatform"
-                  @regenerate="onRegenerate(question.uuid)"
-                  @delete="handleDelete(question.uuid, question.children[0].uuid)"
-                />
+                <Message :date-time="question.children[0].createTime" :text="question.children[0].remark" type="text" :inversion="question.children[0].inversion" :regenerate="true" :error="question.children[0].error" :loading="question.children[0].loading" :ai-model-platform="question.children[0].aiModelPlatform" :ai-model-name="question.children[0].aiModelName" @regenerate="onRegenerate(question.uuid)" @delete="handleDelete(question.uuid, question.children[0].uuid)" />
               </template>
             </div>
           </template>
@@ -572,11 +502,7 @@ onDeactivated(() => {
         <div class="flex items-center space-x-2">
           <NAutoComplete v-model:value="prompt" class="grow" :options="searchOptions" :get-show="getShow">
             <template #default="{ handleInput, handleBlur, handleFocus }">
-              <NInput
-                ref="inputRef" v-model:value="prompt" type="textarea" :placeholder="placeholder"
-                :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }" @input="handleInput" @focus="handleFocus"
-                @blur="handleBlur" @keyup.up="handleUp" @keyup.down="handleDown" @keypress="handleEnter"
-              />
+              <NInput ref="inputRef" v-model:value="prompt" type="textarea" :placeholder="placeholder" :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }" @input="handleInput" @focus="handleFocus" @blur="handleBlur" @keyup.up="handleUp" @keyup.down="handleDown" @keypress="handleEnter" />
             </template>
           </NAutoComplete>
           <NButton class="flex-none" type="primary" :disabled="buttonDisabled" @click="handleSubmit">

@@ -10,6 +10,7 @@ declare namespace Chat {
 		error?: boolean
 		loading?: boolean
 		aiModelPlatform?: string
+		aiModelName?: string
 		attachmentUrls: string[]
 	}
 
@@ -115,6 +116,7 @@ declare namespace Chat {
 		processStatusRemark: string
 
 		aiModelPlatform: string
+		aiModelName: string
 		//绘图成功后生成的图片
 		imageUuids: string[]
 		imageUrls: string[]
