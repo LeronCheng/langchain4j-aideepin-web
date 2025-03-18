@@ -8,6 +8,7 @@ import ollamaAvatar from '@/assets/ollama.png'
 import qianWen from '@/assets/Tongyi-Qianwen.png'
 import claude from '@/assets/Claude-3-Opus.png'
 import doubao from '@/assets/Doubao.png'
+import grok from '@/assets/grok.png'
 import deepseekAvatar from '@/assets/deepseek.svg'
 
 interface Props {
@@ -41,6 +42,7 @@ const avatar = computed(() => userStore.userInfo.avatar)
   </span> -->
   <NAvatar v-else-if="name && name.includes('qwen')" object-fit="contain" round :src="qianWen" color="#fff" />
   <NAvatar v-else-if="name && name.includes('claude')" object-fit="contain" round :src="claude" color="#fff" />
+  <NAvatar v-else-if="name && name.includes('grok')" object-fit="contain" round :src="grok" color="#fff" />
   <NAvatar v-else-if="name && name.includes('doubao')" object-fit="contain" round :src="doubao" />
   <NAvatar v-else-if="name && name.includes('gemini')" object-fit="contain" round :src="ollamaAvatar" />
   <!-- <NAvatar v-else-if="name && name.includes('gpt')" object-fit="contain" round :src="ollamaAvatar" /> -->
