@@ -40,7 +40,7 @@ const fileList = ref<UploadFileInfo[]>([])
 const paginationReactive = reactive({
   page: 1,
   pageSize: 20,
-  itemCount: 0
+  itemCount: 0,
 })
 const searchValue = ref<string>('')
 const tmpItem = reactive<KnowledgeBase.Item>(knowledgeBaseEmptyItem())
@@ -104,11 +104,11 @@ const showFileContent = (selected: KnowledgeBase.Item = knowledgeBaseEmptyItem()
       previewMimeType.value = 'text/plain'
       api
         .loadFileContent(previewFileUrl.value)
-        .then(resp => {
+        .then((resp) => {
           console.log('loadFileContent', resp)
           previewFileContent.value = resp.data
         })
-        .catch(err => {
+        .catch((err) => {
           console.error('loadFileContent error', err)
         })
       break
@@ -193,8 +193,10 @@ async function indexingCheck() {
   }
 }
 
-function onHandleCheckedRowKeys(rows: string[]) {
-  checkedItemRowKeys.value = rows
+function onHandleCheckedRowKeys(keys: Array<string | number>, rows: object[], meta: { row: object | undefined; action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' }) {
+  checkedItemRowKeys.value = keys.map((key) => {
+    return key = `${key}`
+  })
 }
 
 async function onHandlePageChange(currentPage: number) {
@@ -227,7 +229,8 @@ function onUploadSubmit() {
 
 function onUploadFinish({ file, event }: { file: UploadFileInfo; event?: ProgressEvent }) {
   const res = JSON.parse((event?.target as XMLHttpRequest).response)
-  if (res.success) ms.success('上传成功')
+  if (res.success)
+    ms.success('上传成功')
   else ms.error(res.message)
 
   return file
@@ -273,7 +276,7 @@ function deleteKbItem(row: KnowledgeBase.Item) {
       nextTick(() => {
         itemList.value = itemList.value.filter(item => item.uuid !== row.uuid)
       })
-    }
+    },
   })
 }
 
@@ -284,7 +287,8 @@ async function initData() {
 }
 
 onMounted(async () => {
-  if (curKnowledgeBase.title === '') await initData()
+  if (curKnowledgeBase.title === '')
+    await initData()
 })
 watch(
   () => token,
@@ -294,7 +298,7 @@ watch(
       headers.Authorization = token.value
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 

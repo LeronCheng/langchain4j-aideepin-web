@@ -39,11 +39,11 @@ function showOrCloseModal(show: boolean) {
       <div v-show="showEditBtn" class="flex items-center space-x-2">
         <HoverButton @click="openEditView()">
           <span class="text-xl">
-            <SvgIcon icon="ri:edit-line" />
+            <SvgIcon icon="carbon:edit" />
           </span>
         </HoverButton>
       </div>
     </div>
   </header>
-  <EditConv :show-modal="showEditModal" :conversation="conversation" @showModal="showOrCloseModal" />
+  <EditConv :show-modal="showEditModal" :conversation="conversation" @show-modal="showOrCloseModal" />
 </template>

@@ -72,17 +72,8 @@ onMounted(() => {
             <SvgIcon class="text-lg" icon="eos-icons:quota-outlined" />
             <span class="ml-2">{{ $t('setting.quota') }}</span>
           </template>
-          <Quota :user-config="userConfig" @reloadConfig="fetchConfig" />
+          <Quota :user-config="userConfig" @reload-config="fetchConfig" />
         </NTabPane>
-        <!-- <NTabPane name="Advanced" tab="Advanced">
-          <template #tab>
-            <SvgIcon class="text-lg" icon="ri:equalizer-line" />
-            <span class="ml-2">{{ $t('setting.advanced') }}</span>
-          </template>
-          <div class="min-h-[100px]">
-            <Advanced :user-config="userConfig" @reloadConfig="fetchConfig" />
-          </div>
-        </NTabPane> -->
         <NTabPane name="ModifyPassword" tab="ModifyPassword">
           <template #tab>
             <SvgIcon class="text-lg" icon="carbon:password" />

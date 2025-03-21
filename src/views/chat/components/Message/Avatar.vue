@@ -13,6 +13,7 @@ import deepseekAvatar from '@/assets/deepseek.svg'
 
 interface Props {
   name?: string
+  imageSize?: number
 }
 defineProps<Props>()
 
@@ -24,8 +25,8 @@ const avatar = computed(() => userStore.userInfo.avatar)
 <template>
   <!-- User's avatar -->
   <template v-if="name === 'user'">
-    <NAvatar v-if="isString(avatar) && avatar.length > 0" :src="avatar" :fallback-src="defaultAvatar" />
-    <NAvatar v-else round :src="defaultAvatar" />
+    <NAvatar v-if="isString(avatar) && avatar.length > 0" :size="imageSize ? imageSize : 32" :src="avatar" :fallback-src="defaultAvatar" :style="{ backgroundColor: 'transparent' }" />
+    <NAvatar v-else round :size="imageSize ? imageSize : 32" :src="defaultAvatar" style="backgroundColor:transparent" />
   </template>
   <!-- Model platform's avatar -->
   <NAvatar v-else-if="name && name.includes('deepseek')" object-fit="contain" round :src="deepseekAvatar" color="#fff" />
