@@ -22,17 +22,18 @@ const convList = computed(() => chatStore.conversations)
 function handleAdd(this: any) {
   if (chatStore.allConvsCount >= 50) {
     ms.warning(t('chat.converstaionReachLimit50'), {
-      duration: 1000
+      duration: 1000,
     })
     return
   }
-  if (createConvRef.value && createConvRef.value.toggleModal) createConvRef.value.toggleModal()
+  if (createConvRef.value && createConvRef.value.toggleModal)
+    createConvRef.value.toggleModal()
 }
 
 async function handleChatAdd() {
   if (chatStore.allConvsCount >= 50) {
     ms.warning(t('chat.converstaionReachLimit50'), {
-      duration: 1000
+      duration: 1000,
     })
     return
   }
@@ -53,7 +54,7 @@ async function handleChatAdd() {
     console.log('addConv error', error)
     if (error.message) {
       ms.error(error.message, {
-        duration: 2000
+        duration: 2000,
       })
     }
   }
@@ -67,7 +68,7 @@ const getMobileClass = computed<CSSProperties>(() => {
   if (isMobile.value) {
     return {
       position: 'fixed',
-      zIndex: 50
+      zIndex: 50,
     }
   }
   return {}
@@ -76,7 +77,7 @@ const getMobileClass = computed<CSSProperties>(() => {
 const mobileSafeArea = computed(() => {
   if (isMobile.value) {
     return {
-      paddingBottom: 'env(safe-area-inset-bottom)'
+      paddingBottom: 'env(safe-area-inset-bottom)',
     }
   }
   return {}
@@ -84,13 +85,13 @@ const mobileSafeArea = computed(() => {
 
 watch(
   isMobile,
-  val => {
+  (val) => {
     appStore.setSiderCollapsed(val)
   },
   {
     immediate: true,
-    flush: 'post'
-  }
+    flush: 'post',
+  },
 )
 </script>
 

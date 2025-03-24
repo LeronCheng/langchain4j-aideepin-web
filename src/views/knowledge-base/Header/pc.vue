@@ -39,6 +39,6 @@ function showOrCloseModal(show: boolean) {
         </HoverButton>
       </div>
     </div>
-    <KbInfo v-if="knowledgeBase && knowledgeBase.uuid" :show-modal="showEditModal" :knowledge-base="knowledgeBase" @showModal="showOrCloseModal" />
+    <KbInfo v-if="knowledgeBase && knowledgeBase.uuid" :show-modal="showEditModal" :knowledge-base="knowledgeBase" @show-modal="showOrCloseModal" />
   </header>
 </template>

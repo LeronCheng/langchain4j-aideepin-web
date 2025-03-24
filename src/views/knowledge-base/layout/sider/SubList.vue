@@ -23,7 +23,8 @@ interface Props {
   activeKbUuid: string
 }
 async function handleSelect({ uuid }: KnowledgeBase.Info) {
-  if (props.activeKbUuid === uuid) return
+  if (props.activeKbUuid === uuid)
+    return
   kbStore.setActive(uuid)
   router.replace({ name: 'QADetail', params: { kbUuid: uuid } })
 }
@@ -43,7 +44,8 @@ function showKb(item: KnowledgeBase.Info) {
 }
 onActivated(async () => {
   const savedPosition = localStorage.getItem('subListScrollPosition')
-  if (savedPosition) scrollTo(savedPosition as unknown as number)
+  if (savedPosition)
+    scrollTo(savedPosition as unknown as number)
 })
 onUnmounted(() => {
   // 组件卸载前，可以清除之前保存的滚动位置

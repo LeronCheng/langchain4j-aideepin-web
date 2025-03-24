@@ -30,7 +30,7 @@ const mdi = new MarkdownIt({
       return highlightBlock(hljs.highlight(code, { language: lang }).value, lang)
     }
     return highlightBlock(hljs.highlightAuto(code).value, '')
-  }
+  },
 })
 
 mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
@@ -42,7 +42,8 @@ const wrapClass = computed(() => {
 
 const text = computed(() => {
   const value = props.text ?? ''
-  if (!props.asRawText) return mdi.render(value)
+  if (!props.asRawText)
+    return mdi.render(value)
   return value
 })
 

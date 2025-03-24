@@ -70,19 +70,21 @@ function handlerRemove({ file }: { file: UploadFileInfo }) {
 function toggleUsingContext() {
   api.convToggleUsingContext(currConv.value.uuid, !currConv.value.understandContextEnable)
   currConv.value.understandContextEnable = !currConv.value.understandContextEnable
-  if (currConv.value.understandContextEnable) ms.success(t('chat.turnOnContext'))
+  if (currConv.value.understandContextEnable)
+    ms.success(t('chat.turnOnContext'))
   else ms.warning(t('chat.turnOffContext'))
 }
 
 watch(
   () => appStore.selectedLLM,
-  newVal => {
-    if (newVal.inputTypes?.includes('image')) canUploadImage.value = true
+  (newVal) => {
+    if (newVal.inputTypes?.includes('image'))
+      canUploadImage.value = true
     else canUploadImage.value = false
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 </script>
 

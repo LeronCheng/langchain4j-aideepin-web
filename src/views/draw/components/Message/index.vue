@@ -14,7 +14,7 @@ import { useAuthStore } from '@/store'
 import NoPic from '@/assets/no_pic.png'
 
 const props = withDefaults(defineProps<Props>(), {
-  showAvatar: true
+  showAvatar: true,
 })
 const emit = defineEmits<Emit>()
 const dialog = useDialog()
@@ -50,27 +50,27 @@ const options = computed(() => {
     setPublicOrPrivate = {
       label: '私有',
       key: 'setPrivate',
-      icon: iconRender({ icon: 'ri:lock-line' })
+      icon: iconRender({ icon: 'ri:lock-line' }),
     }
   } else {
     setPublicOrPrivate = {
       label: '公开',
       key: 'setPublic',
-      icon: iconRender({ icon: 'ri:cloud-line' })
+      icon: iconRender({ icon: 'ri:cloud-line' }),
     }
   }
   const common = [
     {
       label: t('chat.copy'),
       key: 'copyText',
-      icon: iconRender({ icon: 'ri:file-copy-2-line' })
+      icon: iconRender({ icon: 'ri:file-copy-2-line' }),
     },
     setPublicOrPrivate,
     {
       label: t('common.delete'),
       key: 'delete',
-      icon: iconRender({ icon: 'ri:delete-bin-line' })
-    }
+      icon: iconRender({ icon: 'ri:delete-bin-line' }),
+    },
   ]
 
   return common
@@ -100,7 +100,7 @@ function handleDelImage(imageUrl: string) {
     negativeText: t('common.no'),
     onPositiveClick: async () => {
       emit('delOneImage', imageUrl)
-    }
+    },
   })
 }
 function renderToolbarOut2(imageUrl: string) {
@@ -115,12 +115,12 @@ function renderToolbarOut2(imageUrl: string) {
           color: 'white',
           onClick: () => {
             handleDelImage(imageUrl)
-          }
+          },
         },
         {
-          icon: () => h(Delete24Regular)
-        }
-      )
+          icon: () => h(Delete24Regular),
+        },
+      ),
     ]
   }
 }
