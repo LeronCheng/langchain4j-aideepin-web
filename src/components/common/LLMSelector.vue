@@ -10,10 +10,14 @@ const appStore = useAppStore()
 
 function renderOption({ node, option }: { node: VNode; option: DropdownOption | DropdownGroupOption }) {
   if (option.enable && option.isFree) {
-    return h(NTooltip, { placement: 'left' }, {
-      trigger: () => node,
-      default: () => 'Token额度无限',
-    })
+    return h(
+      NTooltip,
+      { placement: 'left' },
+      {
+        trigger: () => node,
+        default: () => 'Token额度无限'
+      }
+    )
   } else {
     return node
   }
@@ -21,32 +25,34 @@ function renderOption({ node, option }: { node: VNode; option: DropdownOption | 
 function renderLabel(option: DropdownOption) {
   const val = option.value as string
   const modelPlatform = appStore.getLLMByName(val)?.modelPlatform
+  const modelName = appStore.getLLMByName(val)?.modelName
   return [
-    h('div', { class: 'flex items-center' }, {
-      default: () => [
-        h(
-          'span',
-          {
-            class: option.isFree ? 'text-green-500' : 'text-orange-500',
-          },
-          '⨀ ',
-        ),
-        h(
-          AvatarComponent,
-          {
-            name: modelPlatform,
-            imageSize: 20,
-          },
-        ),
-        h(
-          'div',
-          {
-            class: 'ml-1.5',
-          },
-          { default: () => option.label as string },
-        ),
-      ],
-    }),
+    h(
+      'div',
+      { class: 'flex items-center' },
+      {
+        default: () => [
+          h(
+            'span',
+            {
+              class: option.isFree ? 'text-green-500' : 'text-orange-500'
+            },
+            '⨀ '
+          ),
+          h(AvatarComponent, {
+            name: modelName,
+            imageSize: 24
+          }),
+          h(
+            'div',
+            {
+              class: 'ml-1.5'
+            },
+            { default: () => option.label as string }
+          )
+        ]
+      }
+    )
   ]
 }
 
@@ -56,12 +62,9 @@ function handleSelect(key: string | number) {
 </script>
 
 <template>
-  <NDropdown
-    size="small" placement="top-start" trigger="click" :show-arrow="true" :render-label="renderLabel"
-    :render-option="renderOption" :options="appStore.llms" @select="handleSelect"
-  >
+  <NDropdown size="small" placement="top-start" trigger="click" :show-arrow="true" :render-label="renderLabel" :render-option="renderOption" :options="appStore.llms" @select="handleSelect">
     <NButton icon-placement="right">
-      <AvatarComponent :name="appStore.selectedLLM.modelPlatform" :image-size="20" class="mr-1" />{{ appStore.selectedLLM.modelTitle || appStore.selectedLLM.modelName }}
+      <AvatarComponent :name="appStore.selectedLLM.modelName" :image-size="28" class="mr-1" />{{ appStore.selectedLLM.modelTitle || appStore.selectedLLM.modelName }}
     </NButton>
   </NDropdown>
 </template>
