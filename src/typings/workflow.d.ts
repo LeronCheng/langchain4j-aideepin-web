@@ -49,6 +49,7 @@ declare namespace Workflow {
     isPublic: boolean
     nodes: WorkflowNode[]
     edges: WorkflowEdge[]
+    userId: string
     userUuid: string
     userName: string
     createTime: string
@@ -135,6 +136,11 @@ declare namespace Workflow {
     name: string
     title: string
     required: boolean
+
+    //type === files
+    limit: number
+    //type === options
+    multiple: boolean
   }
 
   //引用类型的输入输出定义
@@ -146,6 +152,7 @@ declare namespace Workflow {
   }
 
   interface UserInput {
+    uuid: string
     name: string
     content: UserInputContent
 
@@ -211,6 +218,11 @@ declare namespace Workflow {
     node_param_name: string
     operator: string
     value: string
+  }
+
+  interface NodeConfigKeywordExtractor implements NodeConfig {
+    model_name: string
+    top_n: number
   }
 
   interface NodeIOData {

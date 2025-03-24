@@ -80,7 +80,6 @@ function renderGraph() {
 onNodesChange((changes: NodeChange[]) => {
   let nodeUnSelected = false
   for (const change of changes) {
-    console.log('change', change)
     if ('selected' in change) {
       if (!change.selected && selectedWfNode.value?.uuid === change.id) {
         nodeUnSelected = true
@@ -210,8 +209,9 @@ async function onSave() {
 
   submitting.value = true
   try {
-    await api.workflowUpdate(props.workflow)
+    const { data: updatedWorkflow } = await api.workflowUpdate(props.workflow)
     ms.success('保存成功')
+    wfStore.updateNodesAndEdges(props.workflow.uuid, updatedWorkflow)
   } catch (e) {
     console.log(e)
   } finally {

@@ -11,6 +11,7 @@ export function createNewNode(
   const newWfNode = emptyWorkflowNode()
   newWfNode.uuid = uuidv4().replace(/-/g, '')
   newWfNode.title = component.title
+  newWfNode.workflowId = workflow.id
   newWfNode.workflowUuid = workflow.uuid
   newWfNode.wfComponent = component
   newWfNode.workflowComponentId = component.id
@@ -19,12 +20,14 @@ export function createNewNode(
   newWfNode.outputConfig = {}
   newWfNode.positionX = position.x
   newWfNode.positionY = position.y
-  if (component.name.toLowerCase() === 'classifier')
+  if (component.name === 'Classifier')
     createClassifierNode(newWfNode)
-  else if (component.name.toLowerCase() === 'answer')
+  else if (component.name === 'Answer')
     createAnswer(newWfNode)
-  else if (component.name.toLowerCase() === 'switcher')
+  else if (component.name === 'Switcher')
     createSwitcherNode(workflow, newWfNode)
+  else if (component.name === 'KeywordExtractor')
+    createKeywordExtractor(newWfNode)
 
   workflow.nodes.push(newWfNode)
   uiWorkflow.nodes.push(wfNodeToUiNode(newWfNode))
@@ -177,8 +180,9 @@ function createSwitcherNode(workflow: Workflow.WorkflowInfo, node: Workflow.Work
 }
 
 function createClassifierNode(node: Workflow.WorkflowNode) {
+  const appStore = useAppStore()
   node.nodeConfig = {
-    model_name: '',
+    model_name: appStore.getFirstLLM().modelName,
     categories: [
       {
         category_uuid: 'and',
@@ -202,33 +206,12 @@ function createAnswer(node: Workflow.WorkflowNode) {
   }
 }
 
-function getInputLables(workflow: Workflow.WorkflowInfo, excludeNodes: string[]) {
-  const result = {
-    userInput: [] as Workflow.InputLabel[],
-    componentOutput: [] as Workflow.InputLabel[],
+function createKeywordExtractor(node: Workflow.WorkflowNode) {
+  const appStore = useAppStore()
+  node.nodeConfig = {
+    top_n: 5,
+    model_name: appStore.getFirstLLM().modelName,
   }
-  const nodes = workflow.nodes
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i]
-    if (excludeNodes.includes(node.uuid) || node.wfComponent.name === 'End')
-      continue
-
-    const inputConfig = node.inputConfig
-    if (node.wfComponent.name === 'Start') {
-      for (let j = 0; j < inputConfig.user_inputs.length; j++) {
-        result.userInput.push({
-          label: inputConfig.user_inputs[j].title,
-          value: `${node.uuid}::${inputConfig.user_inputs[j].name}`,
-        })
-      }
-    } else {
-      result.componentOutput.push({
-        label: node.title,
-        value: `${node.uuid}::output`,
-      })
-    }
-  }
-  return result
 }
 
 export function getInputLabelFromParamName(workflow: Workflow.WorkflowInfo, nodeUuid: string, nodeParamName: string) {
