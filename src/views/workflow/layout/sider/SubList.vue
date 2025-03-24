@@ -18,8 +18,7 @@ interface Props {
   activeWfUuid: string
 }
 async function handleSelect({ uuid }: Workflow.WorkflowInfo) {
-  if (props.activeWfUuid === uuid)
-    return
+  if (props.activeWfUuid === uuid) return
   wfStore.setActiveAndGo(uuid)
 }
 
@@ -52,12 +51,7 @@ onUnmounted(() => {
     </template>
     <template v-else>
       <div class="flex flex-col gap-2 text-sm">
-        <a
-          v-for="item of list" :key="item.uuid"
-          class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]"
-          :class="item.uuid === activeWfUuid && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]', 'pr-14']"
-          @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave"
-        >
+        <a v-for="item of list" :key="item.uuid" class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]" :class="item.uuid === activeWfUuid && ['border-[#2379a6]', 'bg-neutral-100', 'text-[#2379a6]', 'dark:bg-[#002140]', 'dark:border-[#2379a6]', 'pr-14']" @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave">
           <span>
             <NIcon v-if="item.isPublic" :component="Cloud32Regular" />
             <NIcon v-if="!item.isPublic" :component="LockClosed32Regular" />
