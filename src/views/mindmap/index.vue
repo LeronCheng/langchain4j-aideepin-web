@@ -10,6 +10,7 @@ const MindMap = defineAsyncComponent(() => import('./components/MindMap.vue'))
 
 const loading = ref(false)
 const genText = ref('')
+const diagramType = ref('markdown') // 默认为 markdown
 
 // 监视 genText 的变化
 async function onGenerate(text: string) {
@@ -42,12 +43,17 @@ function onRender(text: string) {
 
   genText.value = text
 }
+
+function onDiagramTypeChange(type: string) {
+  diagramType.value = type
+  console.log('Diagram type updated in parent:', type)
+}
 </script>
 
 <template>
   <div class="w-full flex h-full">
-    <Sider :genText="genText" :loading="loading" @generate="onGenerate" @render="onRender" />
-    <MindMap :genText="genText" :loading="loading" />
+    <Sider :genText="genText" :loading="loading" @generate="onGenerate" @render="onRender" @diagramTypeChange="onDiagramTypeChange" />
+    <MindMap :genText="genText" :loading="loading" :diagramType="diagramType" />
   </div>
 </template>
 
