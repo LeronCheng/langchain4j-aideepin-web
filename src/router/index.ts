@@ -35,6 +35,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/draw/index.vue'),
   },
   {
+    path: '/mindmap',
+    name: 'Mindmap',
+    component: () => import('@/views/mindmap/index.vue'),
+  },
+  {
     path: '/gallery',
     name: 'Gallery',
     component: () => import('@/views/gallery/index.vue'),

@@ -4,7 +4,7 @@ import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
 import { defineAsyncComponent, h, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { AppsOutline, ChatboxEllipsesOutline, ColorPaletteOutline, ImagesOutline, LibraryOutline, PersonCircleOutline, SearchOutline, SettingsOutline } from '@vicons/ionicons5'
+import { AppsOutline, ChatboxEllipsesOutline, ColorPaletteOutline, ImagesOutline, LibraryOutline, MapOutline, PersonCircleOutline, SearchOutline, SettingsOutline } from '@vicons/ionicons5'
 import { Prompt as PromptIcon } from '@vicons/tabler'
 import { NaiveProvider, PromptStore } from '@/components/common'
 import { useTheme } from '@/hooks/useTheme'
@@ -26,23 +26,22 @@ const { language } = useLanguage()
 const route = useRoute()
 const routeName = route.name as string
 console.log(`menu-${routeName.toLowerCase()}`)
-const activeKey = ref<string>('`menu-chat')
+const activeKey = ref<string>('menu-chat')
 const showPrompt = ref<boolean>(false)
 const showSetting = ref<boolean>(false)
 
-const menuKeyToRouteNames = new Map<string, string[]>(
-  [
-    ['chat', ['Chat', 'ChatDetail']],
-    ['draw', ['Draw']],
-    ['gallery', ['Root', 'Gallery']],
-    ['knowledge-base', ['QAIndex', 'QADetail', 'KnowledgeBaseManage', 'KnowledgeBaseManageDetail']],
-    ['workflow', ['WfDetail']],
-    ['aisearch', ['AiSearch']],
-  ])
+const menuKeyToRouteNames = new Map<string, string[]>([
+  ['chat', ['Chat', 'ChatDetail']],
+  ['draw', ['Draw']],
+  ['gallery', ['Root', 'Gallery']],
+  ['knowledge-base', ['QAIndex', 'QADetail', 'KnowledgeBaseManage', 'KnowledgeBaseManageDetail']],
+  ['workflow', ['WfDetail']],
+  ['mindmap', ['Mindmap']],
+  ['aisearch', ['AiSearch']]
+])
 
 menuKeyToRouteNames.forEach((val, key) => {
-  if (val.includes(routeName))
-    activeKey.value = `menu-${key.toLowerCase()}`
+  if (val.includes(routeName)) activeKey.value = `menu-${key.toLowerCase()}`
 })
 
 const menuOptions: MenuOption[] = [
@@ -56,12 +55,12 @@ const menuOptions: MenuOption[] = [
           to: {
             name: 'ChatDetail',
             params: {
-              uuid: chatStore.active,
-            },
-          },
+              uuid: chatStore.active
+            }
+          }
         },
-        { default: () => '聊天' },
-      ),
+        { default: () => '聊天' }
+      )
   },
   {
     key: 'menu-draw',
@@ -71,11 +70,11 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: {
-            name: 'Draw',
-          },
+            name: 'Draw'
+          }
         },
-        { default: () => '绘画' },
-      ),
+        { default: () => '绘画' }
+      )
   },
   {
     key: 'menu-gallery',
@@ -85,11 +84,11 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: {
-            name: 'Gallery',
-          },
+            name: 'Gallery'
+          }
         },
-        { default: () => '画廊' },
-      ),
+        { default: () => '画廊' }
+      )
   },
   {
     key: 'menu-knowledge-base',
@@ -101,12 +100,12 @@ const menuOptions: MenuOption[] = [
           to: {
             name: 'QADetail',
             params: {
-              kbUuid: kbStore.activeKbUuid,
-            },
-          },
+              kbUuid: kbStore.activeKbUuid
+            }
+          }
         },
-        { default: () => '知识库' },
-      ),
+        { default: () => '知识库' }
+      )
   },
   {
     key: 'menu-workflow',
@@ -118,12 +117,26 @@ const menuOptions: MenuOption[] = [
           to: {
             name: 'WfDetail',
             params: {
-              uuid: wfStore.activeUuid,
-            },
-          },
+              uuid: wfStore.activeUuid
+            }
+          }
         },
-        { default: () => '应用' },
-      ),
+        { default: () => '应用' }
+      )
+  },
+  {
+    key: 'menu-mindmap',
+    icon: renderIcon(MapOutline),
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: 'Mindmap'
+          }
+        },
+        { default: () => '图表' }
+      )
   },
   {
     key: 'menu-aisearch',
@@ -133,12 +146,12 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: {
-            name: 'AiSearch',
-          },
+            name: 'AiSearch'
+          }
         },
-        { default: () => '搜索' },
-      ),
-  },
+        { default: () => '搜索' }
+      )
+  }
 ]
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
