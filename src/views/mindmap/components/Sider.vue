@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { NButton, NInput } from 'naive-ui'
 
 const props = defineProps<{
@@ -19,7 +19,8 @@ watch(
   () => props.genText,
   val => {
     gen.value = val
-  }
+  },
+  { immediate: true }
 )
 
 function onReRender() {
@@ -61,6 +62,15 @@ function onCase() {
 function onGenerate() {
   emit('generate', text.value)
 }
+
+// 在组件挂载时确保 gen.value 正确初始化
+onMounted(() => {
+  // 如果 gen 为空但 props.genText 有值，同步数据
+  if ((!gen.value || gen.value.trim() === '') && props.genText) {
+    console.log('Initializing gen.value with props.genText on mount')
+    gen.value = props.genText
+  }
+})
 </script>
 
 <template>
@@ -92,7 +102,7 @@ function onGenerate() {
         <NButton secondary size="tiny" type="success" @click="onReRender">重新渲染</NButton>
       </div>
     </div>
-    <NInput v-model="gen" placeholder="生成的Markdown格式思维导图内容将显示在这里" :rows="16" type="textarea" />
+    <NInput v-model:value="gen" placeholder="生成的Markdown格式思维导图内容将显示在这里" @blur="blurr" :rows="16" type="textarea" />
   </div>
 </template>
 

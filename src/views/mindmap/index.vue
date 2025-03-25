@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import Sider from './components/Sider.vue'
-import MindMap from './components/MindMap.vue'
-import { ref } from 'vue'
+import { defineAsyncComponent, ref, onMounted, watch } from 'vue'
+
+const Sider = defineAsyncComponent(() => import('./components/Sider.vue'))
+const MindMap = defineAsyncComponent(() => import('./components/MindMap.vue'))
 
 // In a real app, these would be imported from actual APIs
 // import { genMindMap } from '@/api/chat';
@@ -10,6 +11,7 @@ import { ref } from 'vue'
 const loading = ref(false)
 const genText = ref('')
 
+// 监视 genText 的变化
 async function onGenerate(text: string) {
   if (!text || text.trim() === '') {
     return
@@ -26,12 +28,18 @@ async function onGenerate(text: string) {
     await new Promise(resolve => setTimeout(resolve, 1000))
 
     genText.value = header + sections.join('\n')
+    console.log('Generated and set new genText:', genText.value)
   } finally {
     loading.value = false
   }
 }
 
 function onRender(text: string) {
+  // 防止 genText 被设置为空字符串
+  if (!text || text.trim() === '') {
+    return
+  }
+
   genText.value = text
 }
 </script>

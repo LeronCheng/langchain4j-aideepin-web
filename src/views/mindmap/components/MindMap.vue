@@ -3,27 +3,45 @@ import { Transformer } from 'markmap-lib'
 import { Markmap } from 'markmap-view'
 import { onMounted, watch } from 'vue'
 import { NButton } from 'naive-ui'
+import { downloadPdf, downloadPng, downloadSvg } from '@/utils/downloadFile'
 
 const props = defineProps<{
   genText: string
   loading: boolean
 }>()
 
+console.log('MindMap component - initial props.genText:', props.genText)
+
 let instance: Markmap | null = null
 onMounted(() => {
+  console.log('MindMap mounted - props.genText:', props.genText)
   const el = document.getElementById('mindmap') as any
   instance = Markmap.create(el)
+
+  // 如果初始时有数据，立即渲染
+  if (props.genText) {
+    console.log('Initial rendering with genText:', props.genText)
+    const transformer = new Transformer()
+    const { root } = transformer.transform(props.genText)
+    instance.setData(root)
+    instance.fit()
+  }
 })
 
 watch(
   () => props.genText,
   val => {
-    if (!val) return
+    console.log('MindMap - watch triggered with genText:', val)
+    if (!val) {
+      console.log('MindMap - empty genText, skipping render')
+      return
+    }
 
     const transformer = new Transformer()
     const { root } = transformer.transform(val)
     instance?.setData(root)
     instance?.fit()
+    console.log('MindMap - rendered successfully')
   }
 )
 
@@ -39,19 +57,19 @@ function onZoomFill() {
   instance?.fit()
 }
 
-function downloadPng() {
+function downPng() {
   // Basic implementation - in a real app would use html2canvas or similar
-  alert('功能待实现：下载PNG')
+  downloadPng('mindmap-view', 'mindmap-shot')
 }
 
-function downloadSvg() {
+function downSvg() {
   // Basic implementation - in a real app would get SVG content and create download
-  alert('功能待实现：下载SVG')
+  downloadSvg('mindmap-view', 'mindmap-shot')
 }
 
-function downloadPdf() {
+function downPdf() {
   // Basic implementation - in a real app would convert to PDF and download
-  alert('功能待实现：下载PDF')
+  downloadPdf('mindmap-view', 'mindmap-shot')
 }
 </script>
 
@@ -75,7 +93,7 @@ function downloadPdf() {
           <path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
         </svg>
       </NButton>
-      <NButton round size="small" @click="downloadPng">
+      <NButton round size="small" @click="downPng">
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-lg">
             <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7l7-7z" />
@@ -83,7 +101,7 @@ function downloadPdf() {
         </template>
         PNG
       </NButton>
-      <NButton round size="small" @click="downloadSvg">
+      <NButton round size="small" @click="downSvg">
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-lg">
             <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7l7-7z" />
@@ -91,7 +109,7 @@ function downloadPdf() {
         </template>
         SVG
       </NButton>
-      <NButton round size="small" @click="downloadPdf">
+      <NButton round size="small" @click="downPdf">
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-lg">
             <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7l7-7z" />
