@@ -8,8 +8,9 @@ const MindMap = defineAsyncComponent(() => import('./components/MindMap.vue'))
 // import { genMindMap } from '@/api/chat';
 // import { isBlank } from '@/utils/is';
 
-const loading = ref(false)
+const text = ref('')
 const genText = ref('')
+const loading = ref(false)
 const diagramType = ref('markdown') // 默认为 markdown
 
 // 监视 genText 的变化
@@ -20,16 +21,61 @@ async function onGenerate(text: string) {
 
   loading.value = true
   try {
-    // In a real implementation, this would call an API
-    // For now, we'll just use a simple markdown transformation
-    const header = '# ' + text + '\n\n'
-    const sections = ['## 主要概念', '### 定义', '### 特点', '## 相关应用', '### 实际案例', '#### 示例1', '#### 示例2', '### 潜在用途', '## 未来发展', '### 技术趋势', '### 可能的挑战']
+    // Call workflow API to generate sections
+    const response = await fetch('http://192.168.50.83/v1/workflows/run', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer app-4yZsIwlKy2VdM9OwhEuQmeqa'
+      },
+      body: JSON.stringify({
+        inputs: {
+          type: diagramType.value,
+          input: text
+        },
+        response_mode: 'streaming',
+        user: 'ee4c6ff9-b987-4867-9ca3-361312d81af9'
+      })
+    })
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    if (!response.ok) {
+      throw new Error('Failed to generate sections')
+    }
 
-    genText.value = header + sections.join('\n')
-    console.log('Generated and set new genText:', genText.value)
+    // Handle SSE response
+    const reader = response.body?.getReader()
+    const decoder = new TextDecoder()
+    let accumulatedOutput = ''
+
+    if (!reader) {
+      throw new Error('Failed to get response reader')
+    }
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+
+      const chunk = decoder.decode(value)
+      const lines = chunk.split('\n')
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6)
+          try {
+            const parsed = JSON.parse(data)
+            if (parsed.event === 'workflow_finished') {
+              accumulatedOutput = parsed.data.outputs.output
+              // 只在数据完全获取后更新 genText
+              genText.value = accumulatedOutput
+            }
+          } catch (e) {
+            console.error('Error parsing SSE data:', e)
+          }
+        }
+      }
+    }
+  } catch (error) {
+    alert('图表渲染失败')
   } finally {
     loading.value = false
   }
@@ -44,9 +90,16 @@ function onRender(text: string) {
   genText.value = text
 }
 
-function onDiagramTypeChange(type: string) {
+// 切换图表类型
+async function onDiagramTypeChange(type: string) {
   diagramType.value = type
-  console.log('Diagram type updated in parent:', type)
+  // 如果内容描述不为空，重新生成内容
+  if (text.value && text.value.trim() !== '') {
+    // 先清空当前内容
+    genText.value = ''
+    // 重新获取数据
+    await onGenerate(text.value)
+  }
 }
 </script>
 

@@ -110,7 +110,7 @@ const renderMermaid = async () => {
     // 应用初始变换
     applyMermaidTransform()
   } catch (error) {
-    alert('Mermaid 格式错误，请检查语法')
+    // alert('Mermaid 格式错误，请检查语法')
     mermaidContainer.value.innerHTML = `<div class="error">Mermaid格式错误</div>`
   }
 }
@@ -419,7 +419,7 @@ onUnmounted(() => {
       <div ref="mermaidContainer" class="mermaid-container h-full w-full" :style="{ display: props.diagramType === 'mermaid' ? 'block' : 'none' }"></div>
 
       <!-- ECharts 容器 -->
-      <div ref="echartsContainer" class="echarts-container h-full w-full" :style="{ display: props.diagramType === 'charts' ? 'block' : 'none' }"></div>
+      <div ref="echartsContainer" class="echarts-container h-full w-full" :style="{ display: props.diagramType === 'echart' ? 'block' : 'none' }"></div>
     </div>
   </div>
 </template>

@@ -33,7 +33,6 @@ watch(
 )
 
 function onReRender() {
-  console.log('Re-rendering with:', gen.value, 'type:', diagramType.value)
   emit('render', gen.value)
   emit('diagramTypeChange', diagramType.value)
 }
@@ -84,7 +83,7 @@ function onCase() {
     I --> B
     G --> J([结束])
     `
-  } else if (diagramType.value === 'charts') {
+  } else if (diagramType.value === 'echart') {
     text.value = `学生成绩统计`
     gen.value = `{
     "title": {
@@ -126,91 +125,10 @@ function onGenerate() {
 
 // 切换图表类型
 const onDiagramTypeChange = (value: string) => {
-  console.log('Diagram type changed to:', value)
   diagramType.value = value
-
-  // 根据不同的图表类型设置默认示例
-  if (value === 'markdown') {
-    gen.value = `
-# 番茄炒蛋的制作流程
-
-## 材料准备
-- 购买新鲜的番茄和鸡蛋
-- 准备调味料，如盐，糖，酱油等
-
-## 制作步骤
-### 步骤1：准备食材
-- 清洗番茄，切成块状
-- 破开鸡蛋，搅拌均匀
-
-### 步骤2：炒制
-- 热锅凉油，倒入鸡蛋液翻炒至熟
-- 将炒好的鸡蛋盛出备用
-- 锅里重新加油，放入番茄翻炒至汁液出来
-
-### 步骤3：调味
-- 倒入炒好的鸡蛋，加入适量的盐，糖，酱油等调料翻炒均匀
-
-### 步骤4：出锅
-- 炒至食材完全融合，出锅即可
-
-## 注意事项
-- 注意控制火候，避免炒焦
-- 根据个人口味调整调料比例
-    `
-  } else if (value === 'mermaid') {
-    gen.value = `
- graph TD
-    A([开始]) --> B[访问登录页面]
-    B --> C{是否已注册?}
-    C -->|是| D[输入账号密码]
-    C -->|否| E[前往注册页面]
-    D --> F{验证通过?}
-    F -->|是| G[进入个人主页]
-    F -->|否| H[提示错误信息]
-    H --> B
-    E --> I[完成注册]
-    I --> B
-    G --> J([结束])
-    `
-  } else if (value === 'charts') {
-    gen.value = `{
-    "title": {
-        "text": "学生成绩统计"
-    },
-    "tooltip": {},
-    "legend": {
-        "data": ["小红", "小明", "小黑"]
-    },
-    "xAxis": {
-        "data": ["语文", "数学", "英语"]
-    },
-    "yAxis": {},
-    "series": [
-        {
-            "name": "小红",
-            "type": "bar",
-            "data": [45, 15, 32]
-        },
-        {
-            "name": "小明",
-            "type": "bar",
-            "data": [44, 14, 33]
-        },
-        {
-            "name": "小黑",
-            "type": "bar",
-            "data": [38, 10, 35]
-        }
-    ]
-}`
-  }
-
+  // 清空内容
+  gen.value = ''
   // 触发父组件更新
-  emit('update:genText', gen.value)
-  // 触发渲染
-  emit('render', gen.value)
-  // 触发图表类型变更事件
   emit('diagramTypeChange', value)
 }
 
@@ -225,17 +143,17 @@ onMounted(() => {
 
 <template>
   <div class="w-[65%] border-r p-4 pt-2">
-    <div class="flex space-x-2 items-center">
+    <!-- <div class="flex space-x-2 items-center">
       <div>
         选择模型：
         <LLMSelector />
       </div>
-    </div>
+    </div> -->
     <div class="py-2 flex items-center justify-between gap-1">
       <NTabs v-model:value="diagramType" type="segment" size="small" @update:value="onDiagramTypeChange">
         <NTabPane name="markdown" tab="思维导图" />
         <NTabPane name="mermaid" tab="流程图" />
-        <NTabPane name="charts" tab="图表" />
+        <NTabPane name="echart" tab="图表" />
       </NTabs>
     </div>
 
