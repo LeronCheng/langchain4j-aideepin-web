@@ -20,8 +20,8 @@ const mouseEnterId = ref<string>('')
 const agentTypes = ref<AgentType[]>([
   {
     id: 'b84WRODtVBxU486X',
-    name: 'Dify',
-    description: 'Dify',
+    name: 'erp实施专家',
+    description: 'erp实施专家',
     url: 'http://192.168.50.83/chatbot/pnUgGjEYB1PRIdyG'
   }
 ])
