@@ -37,6 +37,7 @@ const menuKeyToRouteNames = new Map<string, string[]>([
   ['knowledge-base', ['QAIndex', 'QADetail', 'KnowledgeBaseManage', 'KnowledgeBaseManageDetail']],
   ['workflow', ['WfDetail']],
   ['mindmap', ['Mindmap']],
+  ['agent', ['Agent']],
   ['aisearch', ['AiSearch']]
 ])
 
@@ -136,6 +137,20 @@ const menuOptions: MenuOption[] = [
           }
         },
         { default: () => '图表' }
+      )
+  },
+  {
+    key: 'menu-agent',
+    icon: renderIcon(MapOutline),
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: 'Agent'
+          }
+        },
+        { default: () => '智能体' }
       )
   },
   {

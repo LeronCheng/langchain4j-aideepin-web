@@ -40,6 +40,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/mindmap/index.vue'),
   },
   {
+    path: '/agent',
+    name: 'Agent',
+    component: () => import('@/views/agent/index.vue'),
+  },
+  {
     path: '/gallery',
     name: 'Gallery',
     component: () => import('@/views/gallery/index.vue'),
