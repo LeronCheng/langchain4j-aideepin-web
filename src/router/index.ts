@@ -45,6 +45,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/agent/index.vue'),
   },
   {
+    path: '/imageProcess',
+    name: 'ImageProcess',
+    component: () => import('@/views/image-process/index.vue'),
+  },
+  {
     path: '/gallery',
     name: 'Gallery',
     component: () => import('@/views/gallery/index.vue'),

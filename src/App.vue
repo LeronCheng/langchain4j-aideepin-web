@@ -4,7 +4,10 @@ import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
 import { defineAsyncComponent, h, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { AppsOutline, ChatboxEllipsesOutline, ColorPaletteOutline, ImagesOutline, LibraryOutline, MapOutline, PersonCircleOutline, SearchOutline, SettingsOutline } from '@vicons/ionicons5'
+import { AppsOutline, ChatboxEllipsesOutline, ColorPaletteOutline, ImagesOutline, LibraryOutline, MapOutline, PersonCircleOutline, SearchOutline, SettingsOutline, BarChartOutline, Image, Heart } from '@vicons/ionicons5'
+import agent from '@/assets/agent.png'
+import echat from '@/assets/echat.png'
+import imageProcess from '@/assets/imageProcess.png'
 import { Prompt as PromptIcon } from '@vicons/tabler'
 import { NaiveProvider, PromptStore } from '@/components/common'
 import { useTheme } from '@/hooks/useTheme'
@@ -38,6 +41,7 @@ const menuKeyToRouteNames = new Map<string, string[]>([
   ['workflow', ['WfDetail']],
   ['mindmap', ['Mindmap']],
   ['agent', ['Agent']],
+  ['imageProcess', ['ImageProcess']],
   ['aisearch', ['AiSearch']]
 ])
 
@@ -127,7 +131,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     key: 'menu-mindmap',
-    icon: renderIcon(MapOutline),
+    icon: renderIcon(BarChartOutline),
     label: () =>
       h(
         RouterLink,
@@ -141,7 +145,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     key: 'menu-agent',
-    icon: renderIcon(MapOutline),
+    icon: renderIcon(Heart),
     label: () =>
       h(
         RouterLink,
@@ -151,6 +155,20 @@ const menuOptions: MenuOption[] = [
           }
         },
         { default: () => '智能体' }
+      )
+  },
+  {
+    key: 'menu-imageProcess',
+    icon: renderIcon(Image),
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: 'ImageProcess'
+          }
+        },
+        { default: () => '图像处理' }
       )
   },
   {
