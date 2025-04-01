@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref, onMounted, watch } from 'vue'
+import LoginTip from '@/views/user/LoginTip.vue'
+import { useAuthStore } from '@/store'
 
+const authStore = useAuthStore()
 const Sider = defineAsyncComponent(() => import('./components/Sider.vue'))
 const MindMap = defineAsyncComponent(() => import('./components/MindMap.vue'))
 
@@ -104,7 +107,10 @@ async function onDiagramTypeChange(type: string) {
 </script>
 
 <template>
-  <div class="w-full flex h-full">
+  <div v-if="!authStore.token" class="w-full h-full">
+    <LoginTip />
+  </div>
+  <div v-else class="w-full flex h-full">
     <Sider :genText="genText" :loading="loading" @generate="onGenerate" @render="onRender" @diagramTypeChange="onDiagramTypeChange" />
     <MindMap :genText="genText" :loading="loading" :diagramType="diagramType" />
   </div>

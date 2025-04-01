@@ -4,6 +4,7 @@ import { NMenu, useMessage } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { useAuthStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
+import LoginTip from '@/views/user/LoginTip.vue'
 
 interface AgentType {
   id: string
@@ -86,7 +87,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full flex">
+  <div v-if="!authStore.token" class="w-full h-full">
+    <LoginTip />
+  </div>
+  <div v-else class="w-full h-full flex">
     <!-- 左侧名称列表 -->
     <div class="w-64 h-full border-r border-gray-200 p-4">
       <h2 class="text-base font-semibold mb-4 text-center border-b border-dashed border-gray-300 pb-2">智能体模型</h2>
