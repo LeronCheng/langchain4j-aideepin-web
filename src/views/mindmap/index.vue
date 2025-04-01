@@ -26,7 +26,7 @@ async function onGenerate(text: string) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer app-4yZsIwlKy2VdM9OwhEuQmeqa'
+        Authorization: 'Bearer app-fKd4EJWJbezTmc9KygdlhvXM'
       },
       body: JSON.stringify({
         inputs: {
@@ -34,7 +34,7 @@ async function onGenerate(text: string) {
           input: text
         },
         response_mode: 'streaming',
-        user: 'ee4c6ff9-b987-4867-9ca3-361312d81af9'
+        user: 'a83fb08e-af48-444b-8b4b-8ac6e75d6cea'
       })
     })
 
@@ -110,4 +110,4 @@ async function onDiagramTypeChange(type: string) {
   </div>
 </template>
 
-<style scoped></style> 
+<style scoped></style>
