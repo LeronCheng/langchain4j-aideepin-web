@@ -45,6 +45,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/agent/index.vue'),
   },
   {
+    path: '/pptgeneration',
+    name: 'PPTGeneration',
+    component: () => import('@/views/pptgeneration/index.vue'),
+  },
+  {
     path: '/imageProcess',
     name: 'ImageProcess',
     component: () => import('@/views/image-process/index.vue'),

@@ -4,7 +4,7 @@ import type { MenuOption } from 'naive-ui'
 import type { Component } from 'vue'
 import { defineAsyncComponent, h, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { AppsOutline, ChatboxEllipsesOutline, ColorPaletteOutline, ImagesOutline, LibraryOutline, MapOutline, PersonCircleOutline, SearchOutline, SettingsOutline, BarChartOutline, Image, Heart } from '@vicons/ionicons5'
+import { AppsOutline, ChatboxEllipsesOutline, ColorPaletteOutline, ImagesOutline, LibraryOutline, MapOutline, PersonCircleOutline, SearchOutline, SettingsOutline, BarChartOutline, Image, Heart, Wine } from '@vicons/ionicons5'
 import agent from '@/assets/agent.png'
 import echat from '@/assets/echat.png'
 import imageProcess from '@/assets/imageProcess.png'
@@ -40,6 +40,7 @@ const menuKeyToRouteNames = new Map<string, string[]>([
   ['knowledge-base', ['QAIndex', 'QADetail', 'KnowledgeBaseManage', 'KnowledgeBaseManageDetail']],
   ['workflow', ['WfDetail']],
   ['mindmap', ['Mindmap']],
+  ['pptgeneration', ['PPTGeneration']],
   ['agent', ['Agent']],
   ['imageProcess', ['ImageProcess']],
   ['aisearch', ['AiSearch']]
@@ -155,6 +156,20 @@ const menuOptions: MenuOption[] = [
           }
         },
         { default: () => '智能体' }
+      )
+  },
+  {
+    key: 'menu-pptgeneration',
+    icon: renderIcon(Wine),
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: 'PPTGeneration'
+          }
+        },
+        { default: () => 'ppt生成' }
       )
   },
   {

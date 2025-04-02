@@ -14,7 +14,6 @@ const MindMap = defineAsyncComponent(() => import('./components/MindMap.vue'))
 const text = ref('')
 const genText = ref('')
 const loading = ref(false)
-const diagramType = ref('markdown') // 默认为 markdown
 
 // 监视 genText 的变化
 async function onGenerate(text: string) {
@@ -33,7 +32,7 @@ async function onGenerate(text: string) {
       },
       body: JSON.stringify({
         inputs: {
-          type: diagramType.value,
+          style: '蓝色',
           input: text
         },
         response_mode: 'streaming',
@@ -92,18 +91,6 @@ function onRender(text: string) {
 
   genText.value = text
 }
-
-// 切换图表类型
-async function onDiagramTypeChange(type: string) {
-  diagramType.value = type
-  // 如果内容描述不为空，重新生成内容
-  if (text.value && text.value.trim() !== '') {
-    // 先清空当前内容
-    genText.value = ''
-    // 重新获取数据
-    await onGenerate(text.value)
-  }
-}
 </script>
 
 <template>
@@ -111,8 +98,8 @@ async function onDiagramTypeChange(type: string) {
     <LoginTip />
   </div>
   <div v-else class="w-full flex h-full">
-    <Sider :genText="genText" :loading="loading" @generate="onGenerate" @render="onRender" @diagramTypeChange="onDiagramTypeChange" />
-    <MindMap :genText="genText" :loading="loading" :diagramType="diagramType" />
+    <Sider :genText="genText" :loading="loading" @generate="onGenerate" @render="onRender" />
+    <MindMap :genText="genText" :loading="loading" />
   </div>
 </template>
 
