@@ -24,7 +24,6 @@ const gen = ref('')
 watch(
   () => props.genText,
   val => {
-    console.log('Sider received new genText:', val)
     gen.value = val
   },
   { immediate: true }
@@ -137,7 +136,7 @@ onMounted(() => {
     </div>
     <NInput v-model:value="text" type="textarea" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="请输入内容" class="mb-4" />
     <div class="mt-2 mb-2">
-      <NButton :loading="loading" block secondary type="success" @click="onGenerate">
+      <NButton :loading="loading" block secondary type="primary" @click="onGenerate">
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-lg">
             <path fill="currentColor" d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z" />
@@ -150,9 +149,9 @@ onMounted(() => {
       <div class="flex flex-wrap justify-between items-center mb-2">
         <div class="flex items-center gap-1">
           <span>输出内容</span>
-          <NButton text type="success" @click="onCase">示例</NButton>
+          <NButton text type="primary" @click="onCase">示例</NButton>
         </div>
-        <NButton secondary size="tiny" type="success" @click="onReRender">重新渲染</NButton>
+        <NButton secondary size="tiny" type="primary" @click="onReRender">重新渲染</NButton>
       </div>
     </div>
     <NInput v-model:value="gen" placeholder="生成的HTML格式的PPT内容" :rows="16" type="textarea" />

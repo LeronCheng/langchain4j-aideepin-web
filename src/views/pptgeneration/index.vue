@@ -28,11 +28,12 @@ async function onGenerate(text: string) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer app-fKd4EJWJbezTmc9KygdlhvXM'
+        Authorization: 'Bearer app-Mpvj48k6mIuttevNkNuezvgB'
       },
       body: JSON.stringify({
         inputs: {
           style: '蓝色',
+          model: 'claude',
           input: text
         },
         response_mode: 'streaming',
@@ -59,25 +60,33 @@ async function onGenerate(text: string) {
 
       const chunk = decoder.decode(value)
       const lines = chunk.split('\n')
-
+      // let perDatatext = ''
       for (const line of lines) {
+        console.log(line)
+
         if (line.startsWith('data: ')) {
           const data = line.slice(6)
+          // if (!perDatatext) {
+          //   break
+          // }
           try {
+            // console.log(data)
             const parsed = JSON.parse(data)
-            if (parsed.event === 'workflow_finished') {
-              accumulatedOutput = parsed.data.outputs.output
+            if (parsed.event === 'text_chunk') {
+              accumulatedOutput = parsed.data.text
               // 只在数据完全获取后更新 genText
-              genText.value = accumulatedOutput
+              genText.value = genText.value + accumulatedOutput
             }
           } catch (e) {
-            console.error('Error parsing SSE data:', e)
+            // console.error('Error parsing SSE data:', e)
           }
+        } else {
+          console.log('Received:', line)
         }
       }
     }
   } catch (error) {
-    alert('图表渲染失败')
+    console.error('Error parsing SSE data:', e)
   } finally {
     loading.value = false
   }

@@ -136,7 +136,7 @@ onUnmounted(() => {
 
     <div id="mindmap-view" class="w-full pt-12">
       <!-- ppt 容器 -->
-      <div ref="pptContainer" class="ppt-container w-full"></div>
+      <div ref="pptContainer" class="ppt-container"></div>
     </div>
   </div>
 </template>

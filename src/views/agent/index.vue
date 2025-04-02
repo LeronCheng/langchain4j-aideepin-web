@@ -96,7 +96,7 @@ onMounted(() => {
       <h2 class="text-base font-semibold mb-4 text-center border-b border-dashed border-gray-300 pb-2">智能体模型</h2>
       <div class="flex flex-col gap-2 text-sm">
         <div v-for="item of agentTypes" :key="item.id">
-          <a class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]" :class="selectedAgentId === item.id && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]']" @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave">
+          <a class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]" :class="selectedAgentId === item.id && ['border-[#2379a6]', 'bg-neutral-100', 'text-[#2379a6]', 'dark:bg-[#24272e]', 'dark:border-[#2379a6]']" @click="handleSelect(item)" @mouseenter="handleMouseEnter(item)" @mouseleave="handleMouseLeave">
             <span>
               <SvgIcon icon="ri:message-3-line" />
             </span>
