@@ -16,12 +16,13 @@ const genText = ref('')
 const loading = ref(false)
 
 // 监视 genText 的变化
-async function onGenerate(text: string) {
+async function onGenerate(text: string, model: string, color: string) {
   if (!text || text.trim() === '') {
     return
   }
 
   loading.value = true
+  genText.value = '' // 确保在开始生成前清空
   try {
     // Call workflow API to generate sections
     const response = await fetch('http://192.168.50.83/v1/workflows/run', {
@@ -32,8 +33,8 @@ async function onGenerate(text: string) {
       },
       body: JSON.stringify({
         inputs: {
-          style: '蓝色',
-          model: 'claude',
+          style: color,
+          model: model,
           input: text
         },
         response_mode: 'streaming',

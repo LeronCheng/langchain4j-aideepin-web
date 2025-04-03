@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
-import { NButton, NInput, NTabs, NTabPane } from 'naive-ui'
-import { LLMSelector } from '@/components/common'
+import { NButton, NInput, NTabs, NTabPane, NRadioGroup, NRadio, NRadioButton } from 'naive-ui'
+import Avatar from '@/views/chat/components/Message/Avatar.vue'
 
 const props = defineProps<{
   loading: boolean
@@ -13,13 +13,25 @@ const loading = computed(() => {
 })
 
 const emit = defineEmits<{
-  (e: 'generate', text: string): void
+  (e: 'generate', text: string, model: string, color: string): void
   (e: 'render', text: string): void
   (e: 'update:genText', text: string): void
 }>()
 
 const text = ref('')
 const gen = ref('')
+const selectedModel = ref('claude')
+const selectedColor = ref('蓝色')
+
+const colorOptions = [
+  { label: '红色', value: '红色', bg: '#ffebee', dot: '#f44336' },
+  { label: '橙色', value: '橙色', bg: '#fff3e0', dot: '#ff9800' },
+  { label: '黄色', value: '黄色', bg: '#fffde7', dot: '#ffeb3b' },
+  { label: '绿色', value: '绿色', bg: '#e8f5e9', dot: '#4caf50' },
+  { label: '青色', value: '青色', bg: '#e0f7fa', dot: '#00bcd4' },
+  { label: '蓝色', value: '蓝色', bg: '#e3f2fd', dot: '#2196f3' },
+  { label: '紫色', value: '紫色', bg: '#f3e5f5', dot: '#9c27b0' }
+]
 
 watch(
   () => props.genText,
@@ -110,7 +122,20 @@ function onCase() {
 }
 
 function onGenerate() {
-  emit('generate', text.value)
+  if (!text.value || text.value.trim() === '') {
+    return
+  }
+  // 先清空生成的内容
+  emit('update:genText', '')
+  // 然后生成新内容
+  emit('generate', text.value, selectedModel.value, selectedColor.value)
+}
+
+function onRender() {
+  if (!gen.value || gen.value.trim() === '') {
+    return
+  }
+  emit('render', gen.value)
 }
 
 // 在组件挂载时确保 gen.value 正确初始化
@@ -126,15 +151,41 @@ onMounted(() => {
   <div class="w-[65%] border-r p-4 pt-2">
     <div class="flex space-x-2 items-center">
       <div>
-        选择模型：
-        <LLMSelector />
+        <div class="mb-4">
+          <span class="mr-2">选择模型：</span>
+          <NRadioGroup v-model:value="selectedModel" name="model-type" class="flex gap-4">
+            <NRadioButton value="claude">
+              <div class="flex items-center">
+                <Avatar name="claude" :image-size="20" class="mr-2" />
+                <span>Claude</span>
+              </div>
+            </NRadioButton>
+            <NRadioButton value="deepseek">
+              <div class="flex items-center">
+                <Avatar name="deepseek" :image-size="20" class="mr-2" />
+                <span>Deepseek</span>
+              </div>
+            </NRadioButton>
+          </NRadioGroup>
+        </div>
+        <div class="mb-4">
+          <span class="mr-2">选择颜色：</span>
+          <NRadioGroup v-model:value="selectedColor" name="color-type" class="flex gap-2 flex-wrap">
+            <NRadioButton v-for="color in colorOptions" :key="color.value" :value="color.value" class="!min-w-0 !w-auto px-3">
+              <div class="flex items-center gap-1">
+                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: color.dot }"></div>
+                <span>{{ color.label }}</span>
+              </div>
+            </NRadioButton>
+          </NRadioGroup>
+        </div>
       </div>
     </div>
 
     <div class="py-2 flex items-center justify-between gap-1">
       <div class="text-nowrap">内容描述</div>
     </div>
-    <NInput v-model:value="text" type="textarea" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="请输入内容" class="mb-4" />
+    <NInput v-model:value="text" type="textarea" :autosize="{ minRows: 8, maxRows: 20 }" placeholder="请输入内容" class="mb-4" />
     <div class="mt-2 mb-2">
       <NButton :loading="loading" block secondary type="primary" @click="onGenerate">
         <template #icon>
@@ -145,7 +196,7 @@ onMounted(() => {
       </NButton>
     </div>
 
-    <div class="mt-6">
+    <!-- <div class="mt-6">
       <div class="flex flex-wrap justify-between items-center mb-2">
         <div class="flex items-center gap-1">
           <span>输出内容</span>
@@ -154,7 +205,7 @@ onMounted(() => {
         <NButton secondary size="tiny" type="primary" @click="onReRender">重新渲染</NButton>
       </div>
     </div>
-    <NInput v-model:value="gen" placeholder="生成的HTML格式的PPT内容" :rows="16" type="textarea" />
+    <NInput v-model:value="gen" placeholder="生成的HTML格式的PPT内容" :rows="16" type="textarea" /> -->
   </div>
 </template>
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import PptxGenJS from 'pptxgenjs'
 import { defineProps, nextTick, onMounted, ref, watch, onUnmounted } from 'vue'
 import { NButton } from 'naive-ui'
-import { downloadPdf, downloadPng, downloadSvg } from '@/utils/downloadFile'
+import { downloadSvg } from '@/utils/downloadFile'
 
 const props = defineProps({
   genText: {
@@ -91,6 +92,46 @@ function downSvg() {
   downloadSvg('mindmap-view', 'mindmap-shot')
 }
 
+async function downPPT() {
+  try {
+    // 创建PPT实例
+    const pptx = new PptxGenJS()
+
+    // 设置幻灯片尺寸为16:9
+    pptx.layout = 'LAYOUT_16x9'
+
+    // 添加新的空白幻灯片
+    const slide = pptx.addSlide()
+
+    // 获取SVG元素
+    if (!pptContainer.value) return
+    const svgElement = pptContainer.value.querySelector('svg')
+    if (!svgElement) return
+    // 获取SVG元素的字符串
+    const svgString = new XMLSerializer().serializeToString(svgElement)
+
+    // 将SVG转换为base64格式
+    const base64Data = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgString)))}`
+    console.log(base64Data)
+
+    // 将SVG添加到幻灯片，并设置铺满整个幻灯片
+    slide.addImage({
+      data: base64Data,
+      x: 0,
+      y: 0,
+      w: '100%',
+      h: '100%'
+    })
+
+    // 保存PPT文件
+    await pptx.writeFile({ fileName: '示例.pptx' })
+
+    console.log('PPT生成成功')
+  } catch (error) {
+    console.error('生成PPT时出错:', error)
+  }
+}
+
 onUnmounted(() => {
   // 不需要清理拖动事件监听器，因为已经移除了
 })
@@ -123,6 +164,14 @@ onUnmounted(() => {
           </svg>
         </template>
         SVG
+      </NButton>
+      <NButton round size="small" @click="downPPT">
+        <template #icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-lg">
+            <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7l7-7z" />
+          </svg>
+        </template>
+        PPT
       </NButton>
     </div>
 
