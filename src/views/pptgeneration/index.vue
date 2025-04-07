@@ -54,7 +54,7 @@ async function onGenerate(text: string, model: string, color: string) {
     if (!reader) {
       throw new Error('Failed to get response reader')
     }
-
+    let isSVG = false
     while (true) {
       const { done, value } = await reader.read()
       if (done) break
@@ -63,8 +63,6 @@ async function onGenerate(text: string, model: string, color: string) {
       const lines = chunk.split('\n')
       // let perDatatext = ''
       for (const line of lines) {
-        console.log(line)
-
         if (line.startsWith('data: ')) {
           const data = line.slice(6)
           // if (!perDatatext) {
@@ -75,8 +73,19 @@ async function onGenerate(text: string, model: string, color: string) {
             const parsed = JSON.parse(data)
             if (parsed.event === 'text_chunk') {
               accumulatedOutput = parsed.data.text
-              // 只在数据完全获取后更新 genText
-              genText.value = genText.value + accumulatedOutput
+              console.log(accumulatedOutput)
+              console.log(accumulatedOutput.includes('<svg'))
+              console.log(!isSVG && accumulatedOutput.includes('<svg'))
+
+              if (!isSVG && accumulatedOutput.includes('<svg')) {
+                const startIndex = accumulatedOutput.indexOf('<svg')
+                accumulatedOutput = accumulatedOutput.slice(startIndex)
+                isSVG = true
+              }
+
+              if (isSVG)
+                // 只在数据完全获取后更新 genText
+                genText.value = genText.value + accumulatedOutput
             }
           } catch (e) {
             // console.error('Error parsing SSE data:', e)
