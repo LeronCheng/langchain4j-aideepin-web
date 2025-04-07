@@ -97,40 +97,40 @@ const menuOptions: MenuOption[] = [
         { default: () => '画廊' }
       )
   },
-  {
-    key: 'menu-knowledge-base',
-    icon: renderIcon(LibraryOutline),
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: 'QADetail',
-            params: {
-              kbUuid: kbStore.activeKbUuid
-            }
-          }
-        },
-        { default: () => '知识库' }
-      )
-  },
-  {
-    key: 'menu-workflow',
-    icon: renderIcon(AppsOutline),
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: 'WfDetail',
-            params: {
-              uuid: wfStore.activeUuid
-            }
-          }
-        },
-        { default: () => '应用' }
-      )
-  },
+  // {
+  //   key: 'menu-knowledge-base',
+  //   icon: renderIcon(LibraryOutline),
+  //   label: () =>
+  //     h(
+  //       RouterLink,
+  //       {
+  //         to: {
+  //           name: 'QADetail',
+  //           params: {
+  //             kbUuid: kbStore.activeKbUuid
+  //           }
+  //         }
+  //       },
+  //       { default: () => '知识库' }
+  //     )
+  // },
+  // {
+  //   key: 'menu-workflow',
+  //   icon: renderIcon(AppsOutline),
+  //   label: () =>
+  //     h(
+  //       RouterLink,
+  //       {
+  //         to: {
+  //           name: 'WfDetail',
+  //           params: {
+  //             uuid: wfStore.activeUuid
+  //           }
+  //         }
+  //       },
+  //       { default: () => '应用' }
+  //     )
+  // },
   {
     key: 'menu-mindmap',
     icon: renderIcon(BarChartOutline),
@@ -147,7 +147,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     key: 'menu-agent',
-    icon: renderIcon(Heart),
+    icon: renderIcon(LibraryOutline),
     label: () =>
       h(
         RouterLink,
@@ -189,7 +189,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     key: 'menu-aiExcel',
-    icon: renderIcon(Image),
+    icon: renderIcon(AppsOutline),
     label: () =>
       h(
         RouterLink,
@@ -200,21 +200,21 @@ const menuOptions: MenuOption[] = [
         },
         { default: () => 'AI Excel' }
       )
-  },
-  {
-    key: 'menu-aisearch',
-    icon: renderIcon(SearchOutline),
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: 'AiSearch'
-          }
-        },
-        { default: () => '搜索' }
-      )
   }
+  // {
+  //   key: 'menu-aisearch',
+  //   icon: renderIcon(SearchOutline),
+  //   label: () =>
+  //     h(
+  //       RouterLink,
+  //       {
+  //         to: {
+  //           name: 'AiSearch'
+  //         }
+  //       },
+  //       { default: () => '搜索' }
+  //     )
+  // }
 ]
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
