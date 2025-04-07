@@ -43,7 +43,8 @@ const menuKeyToRouteNames = new Map<string, string[]>([
   ['pptgeneration', ['PPTGeneration']],
   ['agent', ['Agent']],
   ['imageProcess', ['ImageProcess']],
-  ['aisearch', ['AiSearch']]
+  ['aisearch', ['AiSearch']],
+  ['aiExcel', ['AIExcel']]
 ])
 
 menuKeyToRouteNames.forEach((val, key) => {
@@ -184,6 +185,20 @@ const menuOptions: MenuOption[] = [
           }
         },
         { default: () => '图像处理' }
+      )
+  },
+  {
+    key: 'menu-aiExcel',
+    icon: renderIcon(Image),
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: 'AIExcel'
+          }
+        },
+        { default: () => 'AI Excel' }
       )
   },
   {

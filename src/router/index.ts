@@ -55,6 +55,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/image-process/index.vue'),
   },
   {
+    path: '/aiExcel',
+    name: 'AIExcel',
+    component: () => import('@/views/ai-excel/index.vue'),
+  },
+  {
     path: '/gallery',
     name: 'Gallery',
     component: () => import('@/views/gallery/index.vue'),
