@@ -29,7 +29,7 @@ const agentTypes = ref<AgentType[]>([
     id: '2',
     name: 'MES数据分析师',
     description: 'MES数据分析师',
-    url: 'http://192.168.50.83/chatbot/RT21PbdzXRFCZErJ'
+    url: 'http://192.168.50.83/chatbot/r4uRx6pa17NWH8yo'
   }
 ])
 const selectedAgent = ref<AgentType | null>(agentTypes.value[0])
